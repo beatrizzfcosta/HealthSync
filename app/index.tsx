@@ -1,27 +1,31 @@
 import { Text, View, ImageBackground, StyleSheet } from "react-native";
 
+const image = {uri: '../assets/images/index.jpg'};
+
 export default function Index() {
   return (
-    <ImageBackground
-      source={{ uri:"../assets/images/index.jpg"}} // Coloque o link da sua imagem aqui
-      style={styles.background}
-    >
+    <View style={styles.container}>
+    <View style={styles.imageContainer}>
+      <ImageBackground source={image} resizeMode="cover" style={styles.image}/>
+    </View>
       <View style={styles.content}>
-        <Text>Edit app/index.tsx to edit this screen.</Text>
+        <Text>LET'S SYNC YOUR HEALTH DATA WITH US.</Text>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: "cover", // Isso ajusta a imagem para cobrir o fundo inteiro
-    justifyContent: "center",
-    alignItems: "center",
+  container:{
+    
+  },
+  image:{
+
+  },
+  imageContainer:{
+
   },
   content: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
   },
 });
