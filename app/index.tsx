@@ -1,13 +1,13 @@
-import { Text, View, ImageBackground, StyleSheet } from "react-native";
-
-const image = {uri: '../assets/images/index.jpg'};
+import { Text, View, ImageBackground, StyleSheet, Image } from 'react-native';
+import { theme } from '../assets/theme';
+const image = {
+  uri: 'https://cravenutritionalcooking.com/wp-content/uploads/2023/04/filip-mroz-XCkRGOX2VgM-unsplash-1-1024x832.jpg',
+};
 
 export default function Index() {
   return (
     <View style={styles.container}>
-    <View style={styles.imageContainer}>
-      <ImageBackground source={image} resizeMode="cover" style={styles.image}/>
-    </View>
+      <ImageBackground source={image} style={styles.image}></ImageBackground>
       <View style={styles.content}>
         <Text>LET'S SYNC YOUR HEALTH DATA WITH US.</Text>
       </View>
@@ -16,16 +16,28 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  container:{
-    
-  },
-  image:{
-
-  },
-  imageContainer:{
-
+  container: {
+    /* @info Make the containing view fill the screen */
+    flex: 1,
+    flexDirection: 'column',
   },
   content: {
-    justifyContent: "flex-start",
+    height: '40%',
+    backgroundColor: theme.colorDarkGreen,
+    color: theme.colorWhite,
+  },
+  image: {
+    /* @info Make the image fill the containing view */
+    flex: 1,
+    /* @info Scale up the image to fill the container, preserving aspect ratio */
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
+  text: {
+    color: 'white',
+    fontSize: 42,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: '#000000a0',
   },
 });
