@@ -40,5 +40,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     backgroundColor: '#000000a0',
+    fontFamily:'Graduate'
   },
 });
