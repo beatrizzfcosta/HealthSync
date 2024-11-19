@@ -4,12 +4,23 @@ import { theme } from '../assets/theme';
 import * as Font from 'expo-font';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
 const image = {
   uri: 'https://cravenutritionalcooking.com/wp-content/uploads/2023/04/filip-mroz-XCkRGOX2VgM-unsplash-1-1024x832.jpg',
 };
 
+type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
+
+
 export default function Index() {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const navigation = useNavigation<NavigationProp>();
+
+  const handleLogin = () => {
+    navigation.navigate('login');
+  };
 
   useEffect(() => {
     Font.loadAsync({
@@ -20,14 +31,17 @@ export default function Index() {
     return null; // Ou um indicador de carregamento
   }
 
+  handleLoginPage
   return (
     <View style={styles.container}>
       <ImageBackground source={image} style={styles.image}></ImageBackground>
       <View style={styles.content}>
         <Text style={{ fontFamily: 'Graduate', fontSize:30, color:theme.colorWhite }}  >LET'S SYNC YOUR HEALTH DATA WITH US.</Text>
-        <TouchableOpacity >
-          <FontAwesome name='angle-double-up'/>
+        <View style={styles.button}>
+        <TouchableOpacity  >
+          <FontAwesome name='angle-double-up' color='white' size={70}/>
         </TouchableOpacity>
+      </View>
       </View>
     </View>
   );
@@ -43,10 +57,8 @@ const styles = StyleSheet.create({
     height: '40%',
     backgroundColor: theme.colorDarkGreen,
     color: theme.colorWhite,
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontFamily:'Graduate'
+    justifyContent:'space-between',
+    padding:20
   },
   image: {
     /* @info Make the image fill the containing view */
@@ -55,4 +67,9 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     justifyContent: 'center',
   },
+  button:{
+    alignItems:'center',
+    display:'flex',
+    padding:20
+  }
 });
