@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     height: '40%',
     backgroundColor: theme.colorDarkGreen,
     color: theme.colorWhite,
+    fontVariant:
   },
   image: {
     /* @info Make the image fill the containing view */
