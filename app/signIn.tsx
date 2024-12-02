@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, Dimensions, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
+import { theme } from '@/assets/theme';
 const { width: screenWidth } = Dimensions.get('window');
 
 
-const LoginPage = ({ navigation }: { navigation: any }) => {
+const LoginPage = () => {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -23,8 +25,8 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
     }
   };*/
   // Navegação para a página Index 
-  const handleIndex = () => {
-    Alert.alert(
+  //const handleIndex = () => {
+  /*  Alert.alert(
         'Index',
         'Deseja voltar ao index?',
         [
@@ -46,7 +48,7 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
   // Navegação para página de registo
   const handleRegisto = () => {
     navigation.navigate('registo');
-  };
+  };*/
 
   return (
     <View style={styles.container}>
@@ -56,18 +58,19 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
         barStyle={'dark-content'}
         hidden={false}
       />
-      <TouchableOpacity style={styles.icon} onPress={handleIndex}>
-                <FontAwesome name='arrow-left'
-                        size={24}
-                        color='black'/>
-            </TouchableOpacity>
-      <Text style={styles.title}>Login</Text>
-
+      <View style={styles.containerTitle}>
+      <Text style={styles.title}>Welcome to{'\n'}HealthSync</Text>
+      <FontAwesome5
+            name='heartbeat'
+            size={35}
+            color= {theme.colorDarkGreen}
+          />
+      </View>
       <Text style={styles.label}>Email</Text>
       <Input
         containerStyle={styles.inputContainer}
         inputStyle={styles.input}
-        placeholder='Insira o email'
+        placeholder='Enter your email'
         placeholderTextColor="#a3a19e"
         value={mail}
         onChangeText={setMail}
@@ -75,7 +78,7 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
           <FontAwesome
             name='user'
             size={24}
-            color='#c6f000'
+            color= {theme.colorDarkGreen}
           />
         }
       />
@@ -84,7 +87,7 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
       <Input
         containerStyle={styles.inputContainer}
         inputStyle={styles.input}
-        placeholder='Insira a password'
+        placeholder='Enter your password'
         placeholderTextColor="#a3a19e"
         value={password}
         onChangeText={setPassword}
@@ -93,7 +96,7 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
           <FontAwesome
             name='lock'
             size={24}
-            color='#c6f000'
+            color={theme.colorDarkGreen}
           />
         }
       />
@@ -103,11 +106,11 @@ const LoginPage = ({ navigation }: { navigation: any }) => {
       ) : null}
 
       <TouchableOpacity style={styles.button} >
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleRegisto}>
-        <Text style={styles.registerText}>Ainda não tenho conta</Text>
+      <TouchableOpacity>
+        <Text style={styles.registerText}>Don't have an account yet? Sign up here!</Text>
       </TouchableOpacity>
     </View>
   );
@@ -126,36 +129,39 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    fontWeight: 'bold',
+    fontWeight: 'bold', 
+    fontFamily: 'Graduate' 
+  },
+  containerTitle:{
     marginBottom: 20,
+    alignItems:'center',
+    gap:15
   },
   label: {
     alignSelf: 'flex-start',
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 45,
+    fontFamily:'Graduate'
   },
   input: {
     width: 300,
     height: 40,
     paddingHorizontal: 10,
     fontSize: 14,
+    fontFamily:'Graduate'
   },
   inputContainer: {
     width: 300,
     paddingLeft: 0,
     paddingRight: 0,
   },
-  waveContainerBottom: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-  },
   button: {
-    backgroundColor: '#c6f000',
+    marginTop:30,
+    backgroundColor: theme.colorDarkGreen,
     paddingVertical: 15,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 15,
     alignItems: 'center',
     width: 200,
   },
@@ -163,6 +169,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily:'Graduate'
   },
   registerText: {
     color: '#000',
