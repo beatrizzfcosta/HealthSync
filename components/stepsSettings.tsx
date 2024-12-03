@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Modal,
   TouchableWithoutFeedback,
+  FlatList,
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { theme } from '@/assets/theme';
@@ -22,12 +23,27 @@ const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [dailyGoal, setDailyGoal] = useState('2000');
+  const [dailyGoal, setDailyGoal] = useState(2000);
   const [units, setUnits] = useState('');
   const [showNotification, setShowNotification] = useState(false)
+  const flatListRef = React.useRef<FlatList<any>>(null);
+  const amounts = [3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000];
+  const itemWidth = 120; // Largura de cada item
+  const initialIndex = amounts.indexOf(dailyGoal);
+  const initialOffset = initialIndex * itemWidth - itemWidth / 4; // Ajusta para centralizar com paddingHorizontal
+
+  React.useEffect(() => {
+      // Role automaticamente para o valor inicial (250) ao carregar a tela
+      if (flatListRef.current) {
+          flatListRef.current.scrollToOffset({
+              offset: initialOffset,
+              animated: false, // Sem animação para o carregamento inicial
+          });
+      }
+  }, []);
 
   const handleSave = () => {
-    onSave(dailyGoal, units);
+    onSave(dailyGoal.toString(), units);
     onClose(); // Fecha o modal após salvar
   };
 
@@ -59,24 +75,59 @@ const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
                {showNotification && (
                 <View style={styles.notification}>
                   <Text style={styles.notificationText}>
-                    A daily water goal is based on your weight info
+                    The Steps helps you to burn calouries
                   </Text>
                 </View>
               )}
 
               {/* Formulário */}
-              <TextInput
-                style={styles.input}
-                placeholder="Daily Goal"
-                value={dailyGoal}
-                onChangeText={setDailyGoal}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Units"
-                value={units}
-                onChangeText={setUnits}
-              />
+              <View style={styles.carouselContainer}>
+              <FlatList
+  ref={flatListRef}
+  data={amounts}
+  keyExtractor={(item) => item.toString()}
+  showsVerticalScrollIndicator={false} // Indicador de rolagem vertical
+  contentContainerStyle={{
+    paddingVertical: 10, // Espaçamento para centralizar
+    alignItems: 'center', // Centraliza os itens horizontalmente
+  }}
+  onScrollEndDrag={(event) => {
+    const offset = event.nativeEvent.contentOffset.y;
+    const index = Math.round(offset / 10); // Calcula o índice baseado no deslocamento
+    setDailyGoal(amounts[index]);
+  }}
+  onMomentumScrollEnd={(event) => {
+    const offset = event.nativeEvent.contentOffset.y;
+    const index = Math.round(offset / 10); // Divisão pela altura do item
+    setDailyGoal(amounts[index]);
+  }}
+  renderItem={({ item }) => (
+    <TouchableOpacity
+      style={[
+        styles.carouselItem,
+        item === dailyGoal && styles.selectedCarouselItem, // Adiciona destaque ao item selecionado
+      ]}
+      onPress={() => {
+        const index = amounts.indexOf(item);
+        setDailyGoal(item);
+        flatListRef.current?.scrollToOffset({
+          offset: index * 40, // Calcula a posição para centralizar
+          animated: true,
+        });
+      }}
+    >
+      <Text
+        style={[
+          styles.carouselText,
+          item === dailyGoal && styles.selectedCarouselText,
+        ]}
+      >
+        {item} 
+      </Text>
+    </TouchableOpacity>
+  )}
+/>
+                </View>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
@@ -141,15 +192,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Graduate',
   },
-  input: {
+  carouselContainer: {
+    marginVertical: 20,
     width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 10,
-    fontFamily: 'Graduate'
+    alignItems: 'center', // Centraliza os itens horizontalmente
+    height: 200, // Altura do container para limitar a lista
   },
+  carouselItem: {
+    width: '100%', // Largura do item para o layout vertical
+    height: 40, // Altura de cada item
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginVertical: 5, // Espaçamento entre os itens
+  },
+  
+carouselText: {
+    fontSize: 16,
+    color: '#000',
+    fontFamily: 'Graduate'
+},
+selectedCarouselText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#000',
+},
+selectedCarouselItem:{
+
+},
   saveButton: {
     backgroundColor: theme.colorDarkGreen,
     padding: 10,

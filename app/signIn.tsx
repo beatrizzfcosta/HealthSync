@@ -4,8 +4,6 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { theme } from '@/assets/theme';
-const { width: screenWidth } = Dimensions.get('window');
-
 
 const LoginPage = () => {
   const [mail, setMail] = useState('');
