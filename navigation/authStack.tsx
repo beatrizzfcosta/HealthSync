@@ -4,8 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SignInScreen from '../app/signIn';
 import SignUpScreen from '../app/signUp';
 import ProfileScreen from '../app/profile';
-import DataWaterScreen from '../app/dataWater'
-import DataStepsScreen from '../app/dataSteps'
+import DataWaterScreen from '../app/dataWater';
+import DataStepsScreen from '../app/dataSteps';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +19,8 @@ export default function AuthStack() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Sign In" component={DataStepsScreen} />
+      <Stack.Screen name="Sign In" component={SignInScreen} />
+      <Stack.Screen name="Sign Up" component={SignUpScreen} />
     </Stack.Navigator>
   );
 }

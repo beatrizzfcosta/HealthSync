@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, Dimensions, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { theme } from '@/assets/theme';
 
-const LoginPage = () => {
+export default function LoginPage({ navigation }: { navigation: any }) {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,7 +31,7 @@ const LoginPage = () => {
       setErrorMessage('Senha ou email incorretos, tente novamente.');
     }
   };*/
-  // Navegação para a página Index 
+  // Navegação para a página Index
   //const handleIndex = () => {
   /*  Alert.alert(
         'Index',
@@ -42,11 +51,11 @@ const LoginPage = () => {
         { cancelable: true }
     );
 }
-
+*/
   // Navegação para página de registo
   const handleRegisto = () => {
-    navigation.navigate('registo');
-  };*/
+    navigation.navigate('Sign Up');
+  };
 
   return (
     <View style={styles.container}>
@@ -57,27 +66,19 @@ const LoginPage = () => {
         hidden={false}
       />
       <View style={styles.containerTitle}>
-      <Text style={styles.title}>Welcome to{'\n'}HealthSync</Text>
-      <FontAwesome5
-            name='heartbeat'
-            size={35}
-            color= {theme.colorDarkGreen}
-          />
+        <Text style={styles.title}>Welcome to{'\n'}HealthSync</Text>
+        <FontAwesome5 name="heartbeat" size={35} color={theme.colorDarkGreen} />
       </View>
       <Text style={styles.label}>Email</Text>
       <Input
         containerStyle={styles.inputContainer}
         inputStyle={styles.input}
-        placeholder='Enter your email'
+        placeholder="Enter your email"
         placeholderTextColor="#a3a19e"
         value={mail}
         onChangeText={setMail}
         leftIcon={
-          <FontAwesome
-            name='user'
-            size={24}
-            color= {theme.colorDarkGreen}
-          />
+          <FontAwesome name="user" size={24} color={theme.colorDarkGreen} />
         }
       />
 
@@ -85,17 +86,13 @@ const LoginPage = () => {
       <Input
         containerStyle={styles.inputContainer}
         inputStyle={styles.input}
-        placeholder='Enter your password'
+        placeholder="Enter your password"
         placeholderTextColor="#a3a19e"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         leftIcon={
-          <FontAwesome
-            name='lock'
-            size={24}
-            color={theme.colorDarkGreen}
-          />
+          <FontAwesome name="lock" size={24} color={theme.colorDarkGreen} />
         }
       />
 
@@ -103,16 +100,18 @@ const LoginPage = () => {
         <Text style={styles.errorMessage}>{errorMessage}</Text>
       ) : null}
 
-      <TouchableOpacity style={styles.button} >
+      <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
       <TouchableOpacity>
-        <Text style={styles.registerText}>Don't have an account yet? Sign up here!</Text>
+        <Text style={styles.registerText} onPress={handleRegisto}>
+          Don't have an account yet? Sign up here!
+        </Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -121,33 +120,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  icon:{
+  icon: {
     alignSelf: 'flex-start',
-    marginLeft:45,
+    marginLeft: 45,
   },
   title: {
     fontSize: 36,
-    fontWeight: 'bold', 
-    fontFamily: 'Graduate' 
+    fontWeight: 'bold',
+    fontFamily: 'Graduate',
   },
-  containerTitle:{
+  containerTitle: {
     marginBottom: 20,
-    alignItems:'center',
-    gap:15
+    alignItems: 'center',
+    gap: 15,
   },
   label: {
     alignSelf: 'flex-start',
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 45,
-    fontFamily:'Graduate'
+    fontFamily: 'Graduate',
   },
   input: {
     width: 300,
     height: 40,
     paddingHorizontal: 10,
     fontSize: 14,
-    fontFamily:'Graduate'
+    fontFamily: 'Graduate',
   },
   inputContainer: {
     width: 300,
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     paddingRight: 0,
   },
   button: {
-    marginTop:30,
+    marginTop: 30,
     backgroundColor: theme.colorDarkGreen,
     paddingVertical: 15,
     borderRadius: 10,
@@ -167,18 +166,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily:'Graduate'
+    fontFamily: 'Graduate',
   },
   registerText: {
     color: '#000',
     textDecorationLine: 'underline',
   },
-  errorMessage:{
+  errorMessage: {
     color: 'red',
     fontSize: 14,
     alignItems: 'center',
-    padding:10
-  }
+    padding: 10,
+  },
 });
-
-export default LoginPage;
