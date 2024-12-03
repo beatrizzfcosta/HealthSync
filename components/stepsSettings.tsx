@@ -18,29 +18,30 @@ interface WaterSettingsModalProps {
   onSave: (dailyGoal: string, units: string) => void;
 }
 
-const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
+const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
   visible,
   onClose,
   onSave,
 }) => {
-  const [dailyGoal, setDailyGoal] = useState(2000);
+  const [dailyGoal, setDailyGoal] = useState('2000');
   const [units, setUnits] = useState('');
+  const [selectedAmount, setSelectedAmount] = useState(3000);
   const [showNotification, setShowNotification] = useState(false)
   const flatListRef = React.useRef<FlatList<any>>(null);
   const amounts = [3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000];
   const itemWidth = 120; // Largura de cada item
-  const initialIndex = amounts.indexOf(dailyGoal);
+  const initialIndex = amounts.indexOf(selectedAmount);
   const initialOffset = initialIndex * itemWidth - itemWidth / 4; // Ajusta para centralizar com paddingHorizontal
 
   React.useEffect(() => {
-      // Role automaticamente para o valor inicial (250) ao carregar a tela
-      if (flatListRef.current) {
-          flatListRef.current.scrollToOffset({
-              offset: initialOffset,
-              animated: false, // Sem animação para o carregamento inicial
-          });
-      }
-  }, []);
+    // Role automaticamente para o valor inicial (250) ao carregar a tela
+    if (flatListRef.current) {
+        flatListRef.current.scrollToOffset({
+            offset: initialOffset,
+            animated: false, // Sem animação para o carregamento inicial
+        });
+    }
+}, []);
 
   const handleSave = () => {
     onSave(dailyGoal.toString(), units);
@@ -62,7 +63,7 @@ const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
                 <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                   <FontAwesome name="times" size={24} color="black" />
                 </TouchableOpacity>
-                <Text style={styles.modalTitle}>WATER SETTINGS</Text>
+                <Text style={styles.modalTitle}>Steps Settings</Text>
                 <TouchableOpacity style={styles.helpButton}  
                   onPressIn={() => setShowNotification(true)} // Mostra a notificação ao pressionar
                   onPressOut={() => setShowNotification(false)} // Esconde a notificação ao soltar
@@ -81,52 +82,56 @@ const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
               )}
 
               {/* Formulário */}
+              {/* Carrossel Vertical */}
               <View style={styles.carouselContainer}>
-              <FlatList
-  ref={flatListRef}
-  data={amounts}
-  keyExtractor={(item) => item.toString()}
-  showsVerticalScrollIndicator={false} // Indicador de rolagem vertical
-  contentContainerStyle={{
-    paddingVertical: 10, // Espaçamento para centralizar
-    alignItems: 'center', // Centraliza os itens horizontalmente
-  }}
-  onScrollEndDrag={(event) => {
-    const offset = event.nativeEvent.contentOffset.y;
-    const index = Math.round(offset / 10); // Calcula o índice baseado no deslocamento
-    setDailyGoal(amounts[index]);
-  }}
-  onMomentumScrollEnd={(event) => {
-    const offset = event.nativeEvent.contentOffset.y;
-    const index = Math.round(offset / 10); // Divisão pela altura do item
-    setDailyGoal(amounts[index]);
-  }}
-  renderItem={({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.carouselItem,
-        item === dailyGoal && styles.selectedCarouselItem, // Adiciona destaque ao item selecionado
-      ]}
-      onPress={() => {
-        const index = amounts.indexOf(item);
-        setDailyGoal(item);
-        flatListRef.current?.scrollToOffset({
-          offset: index * 40, // Calcula a posição para centralizar
-          animated: true,
-        });
-      }}
-    >
-      <Text
-        style={[
-          styles.carouselText,
-          item === dailyGoal && styles.selectedCarouselText,
-        ]}
-      >
-        {item} 
-      </Text>
-    </TouchableOpacity>
-  )}
-/>
+                    <FlatList
+                        ref={flatListRef}
+                        data={amounts}
+                        keyExtractor={(item) => item.toString()}
+                        
+                        showsVerticalScrollIndicator={false}
+                        snapToAlignment="center"
+                        contentContainerStyle={{
+                            paddingVertical: (75), 
+                        }}
+                        onScrollEndDrag={(event) => {
+                            const offset = event.nativeEvent.contentOffset.y;
+                            const index = Math.round(offset / 50); // Calcula o índice baseado no deslocamento
+                            setSelectedAmount(amounts[index]);
+                        }}
+                        decelerationRate="fast"
+                        onMomentumScrollEnd={(event) => {
+                            const offset = event.nativeEvent.contentOffset.y;
+                            const index = Math.round(offset / 50); // Divisão pela largura do item
+                            setSelectedAmount(amounts[index]);
+                        }}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                                style={[
+                                    styles.carouselItem,
+                                    item === selectedAmount && styles.selectedCarouselItem, // Adiciona destaque ao item selecionado
+                                ]}
+                                onPress={() => {
+                                    const index = amounts.indexOf(item);
+                                    setSelectedAmount(item);
+                                    flatListRef.current?.scrollToOffset({
+                                        offset: index * 50, // Calcula a posição para centralizar
+                                        animated: true,
+                                    });
+                                }}
+                            >
+                                <Text
+                                    style={[
+                                        styles.carouselText,
+                                        item === selectedAmount && styles.selectedCarouselText,
+                                    ]}
+                                >
+                                    {item} ml
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                    />
+
                 </View>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>Save</Text>
@@ -195,18 +200,16 @@ const styles = StyleSheet.create({
   carouselContainer: {
     marginVertical: 20,
     width: '100%',
-    alignItems: 'center', // Centraliza os itens horizontalmente
-    height: 200, // Altura do container para limitar a lista
-  },
+    height:200,
+    alignItems: 'center'
+},
+ 
   carouselItem: {
-    width: '100%', // Largura do item para o layout vertical
-    height: 40, // Altura de cada item
+    width: 100, // Largura de cada item
+    height: 50, // Altura de cada item
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
-    marginVertical: 5, // Espaçamento entre os itens
-  },
-  
+},
 carouselText: {
     fontSize: 16,
     color: '#000',
@@ -242,4 +245,4 @@ selectedCarouselItem:{
   },
 });
 
-export default WaterSettingsModal;
+export default StepsSettingsModal;

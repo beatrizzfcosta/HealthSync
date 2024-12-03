@@ -271,7 +271,6 @@ export default function Perfil() {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        
         <Text style={styles.title}>Perfil</Text>
         <TouchableOpacity>
           <FontAwesome name="check" size={24} color="black"  />

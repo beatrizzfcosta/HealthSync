@@ -80,7 +80,7 @@ const WaterDataScreen: React.FC = () => {
                         showsHorizontalScrollIndicator={false}
                         snapToAlignment="center"
                         contentContainerStyle={{
-                            paddingHorizontal: (115), // Metade do item para centralizar
+                            paddingHorizontal: (115), 
                         }}
                         onScrollEndDrag={(event) => {
                             const offset = event.nativeEvent.contentOffset.x;
