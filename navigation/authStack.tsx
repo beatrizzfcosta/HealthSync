@@ -19,7 +19,7 @@ export default function AuthStack() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Sign In" component={SignInScreen} />
+      <Stack.Screen name="Sign In" component={ProfileScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />
     </Stack.Navigator>
   );

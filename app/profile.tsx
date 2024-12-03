@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Modal, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Modal, Alert, Image, Button } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -10,6 +10,7 @@ import { Platform } from 'react-native';
 import { theme } from '@/assets/theme';
 
 export default function Perfil() {
+  
   // Estados para definir quais campos estão em modo de edição
   const [isEditing, setIsEditing] = useState({
     username: false,
@@ -30,13 +31,16 @@ export default function Perfil() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState<string>('');
+
   // Opções de gênero disponíveis
   const genders = [
     { label: 'Masculino', value: 'masculino' },
     { label: 'Feminino', value: 'feminino' },
     { label: 'Outro', value: 'outro' },
   ];
+
   const [activityLevel, setActivityLevel] = useState<string>('');
+  
   // Níveis de atividade disponíveis
   const activityLevels = [
     { label: 'Sedentário', value: 'sedentary' },
@@ -44,7 +48,7 @@ export default function Perfil() {
     { label: 'Moderadamente Ativo: 3-4/semana', value: 'moderately_active' },
     { label: 'Muito Ativo: 5-6/semana', value: 'very_active' },
     { label: 'Extremamente Ativo: 6-7/semana', value: 'extremely_active' },
-];
+  ];
 
   const [dri, setDri] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -270,196 +274,30 @@ export default function Perfil() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>Perfil</Text>
-        <TouchableOpacity>
-          <FontAwesome name="check" size={24} color="black"  />
+      
+      <View style={styles.imageContainer}>
+        <View></View>
+      </View>
+      
+      <View style={styles.inputsContainer}>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+      </View>
+
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Guardar</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.profileImageContainer}>
-        <View style={styles.profileImage}> 
-          {photoUrl ? ( <Image source={{ uri: photoUrl }} style={{ width: 150, height: 150, borderRadius: 75 }} /> ) : ( <FontAwesome name="user-circle" size={150} color={theme.colorDarkGreen} /> )}
-        </View>
-        <TouchableOpacity >
-          <View style={styles.photoAdd}>
-            <FontAwesome name="camera" size={24} color={theme.colorDarkGreen} />
-          </View>
-        </TouchableOpacity>
-      </View>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formContainer}>
-          <View style={styles.inputRowColumn}>
-            <View style={styles.inputRowWithButton}>
-              <Text style={styles.label}>Username</Text>
-              <TouchableOpacity onPress={() => handleEditToggle('username')}>
-                <FontAwesome name="edit" size={20} color="black" />
-              </TouchableOpacity>
-            </View>
-            <Input
-              containerStyle={styles.inputContainer}
-              inputStyle={[styles.input, { color: isEditing.username ? 'black' : '#a3a19e' }]}
-              value={username}
-              editable={isEditing.username}
-              onChangeText={(value) => setUsername(value)}
-              leftIcon={
-                <FontAwesome name="user" size={24} color={theme.colorDarkGreen} style={{ marginRight: 5 }} />
-              }
-            />
-          </View>
-          <View style={styles.inputDropdown}>
-            <View style={styles.inputRowColumn}>
-              <View style={styles.inputRowWithButton}>
-                <Text style={styles.label}>Genêro</Text>
-                <TouchableOpacity onPress={() => handleEditToggle('gender')}>
-                  <FontAwesome name="edit" size={20} color="black" />
-                </TouchableOpacity>
-              </View>
-              <Dropdown
-                data={genders}
-                value={gender}
-                placeholder="Selecione o genêro"
-                placeholderStyle={{
-                  color: isEditing.gender ? 'black' : '#a3a19e',
-                  fontSize: 14,
-                }}
-                style={[styles.dropdown, styles.inputContainer]}
-                onChange={(item) => setGender(item.value)}
-                renderLeftIcon={() => (
-                  <FontAwesome name="venus-mars" size={24} color={theme.colorDarkGreen} style={{ marginRight: 5 }} />
-                )}
-                disable={!isEditing.gender} labelField={'label'} valueField={'value'} />
-            </View>
-          </View>
-          <View style={styles.inputRowColumn}>
-            <View style={styles.inputRowWithButton}>
-              <Text style={styles.label}>Data de Nascimento</Text>
-              <TouchableOpacity onPress={() => handleEditToggle('birthDate')}>
-                <FontAwesome name="edit" size={20} color="black" />
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={styles.dateInputContainer} onPress={() => isEditing.birthDate && setShowDatePicker(true)}>
-              <FontAwesome name='calendar' size={24} color={theme.colorDarkGreen} style={{ marginRight: 5}} />
-              <Text style={styles.dateText}>
-                {birthDate.toLocaleDateString('pt-PT')}
-              </Text>
-            </TouchableOpacity>
-          </View>
 
-          <Modal
-            visible={showDatePicker}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setShowDatePicker(false)}
-          >
-            <View style={styles.modalBackground}>
-              <View style={styles.pickerContainer}>
-                <DatePicker
-                  date={birthDate}
-                  onDateChange={setBirthDate}
-                  maximumDate={new Date()} // Define o máximo como hoje para impedir datas futuras
-                  mode="date"
-                />
-                <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
-                  <Text style={styles.confirmButtonText}>Confirmar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-
-          <View style={styles.rowContainer}>
-            <View style={styles.columnContainer}>
-              <View style={styles.inputRowColumn}>
-                <View style={styles.inputRowWithButton}>
-                  <Text style={styles.label}>Altura</Text>
-                  <TouchableOpacity onPress={() => handleEditToggle('height')}>
-                    <FontAwesome name="edit" size={20} color="black" />
-                  </TouchableOpacity>
-                </View>
-                <Input
-                  containerStyle={styles.inputContainer}
-                  inputStyle={[styles.input, { color: isEditing.height ? 'black' : '#a3a19e' }]}
-                  value={height}
-                  editable={isEditing.height}
-                  onChangeText={(value) => setHeight(value)}
-                  keyboardType="numeric"
-                  leftIcon={
-                    <FontAwesome name="arrows-v" size={24} color={theme.colorDarkGreen} style={{ marginRight: 5 }} />
-                  }
-                />
-              </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.inputRowColumn}>
-                <View style={styles.inputRowWithButton}>
-                  <Text style={styles.label}>Peso</Text>
-                  <TouchableOpacity onPress={() => handleEditToggle('weight')}>
-                    <FontAwesome name="edit" size={20} color="black" />
-                  </TouchableOpacity>
-                </View>
-                <Input
-                  containerStyle={styles.inputContainer}
-                  inputStyle={[styles.input, { color: isEditing.weight ? 'black' : '#a3a19e' }]}
-                  value={weight}
-                  editable={isEditing.weight}
-                  onChangeText={(value) => setWeight(value)}
-                  keyboardType="numeric"
-                  leftIcon={
-                    <FontAwesome name="balance-scale" size={24} color={theme.colorDarkGreen} style={{ marginRight: 5 }} />
-                  }
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.inputDropdown}>
-            <View style={styles.inputRowColumn}>
-              <View style={styles.inputRowWithButton}>
-                <Text style={styles.label}>Nível de Atividade</Text>
-                <TouchableOpacity onPress={() => handleEditToggle('activityLevel')}>
-                  <FontAwesome name="edit" size={20} color="black" />
-                </TouchableOpacity>
-              </View>
-              <Dropdown
-                data={activityLevels}
-                value={activityLevel}
-                placeholder="Selecione o nível de atividade"
-                placeholderStyle={{
-                  color: isEditing.activityLevel ? 'black' : '#a3a19e',
-                  fontSize: 14,
-                }}
-                style={[styles.dropdown, styles.inputContainer]}
-                onChange={(item) => setActivityLevel(item.value)}
-                renderLeftIcon={() => (
-                  <FontAwesome name="heartbeat" size={24} color={theme.colorDarkGreen} style={{ marginRight: 5 }} />
-                )}
-                disable={!isEditing.activityLevel} labelField={'label'} valueField={'value'} />
-            </View>
-          </View>
-          <View style={styles.inputRowColumn}>
-              <Text style={styles.label}>Meta Calórica</Text>
-            <Input
-              containerStyle={styles.inputContainer}
-              inputStyle={[styles.input, { color: isEditing.username ? 'black' : '#a3a19e' }]}
-              value={dri}
-              editable={false}
-              onChangeText={(value) => setDri(value)}
-              leftIcon={
-                <MaterialCommunityIcons
-                  name='fire'
-                  size={30}
-                  color='#c6f000'
-                  style={{ marginRight: 5 }}
-                />
-              }
-            />
-          </View>
-          <TouchableOpacity style={[styles.button, styles.buttonSelected]} onPress={handleSave}>
-            <Text style={styles.buttonText}>Salvar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.buttonSelected]} onPress={handleLogOut}>
-            <Text style={styles.buttonText}>Sair</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
     </View>
   );
 }
@@ -468,144 +306,53 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colorLightGreen,
     alignItems:'center',
+    height: '100%',
+    width: '100%',
     flex:1
   },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 50,
-    paddingBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    width:350,
-    justifyContent:'space-between'
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  formContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  inputRowColumn: {
+
+  imageContainer: {
+    backgroundColor: 'black',
     width: '90%',
-  },
-  inputRowWithButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  label: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-    alignSelf: 'flex-start',
-    fontSize:16
-  },
-  inputContainer: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  input: {
-    fontSize: 16,
-  },
-  dropdown: {
-    padding: 10,
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: '#86939e',
-    backgroundColor: 'white',
-  },
-  placeholder: {
-    color: '#a3a19e',
-    fontSize: 16,
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '95%',
-    alignItems: 'center'
-  },
-  columnContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  button: {
-    backgroundColor: '#c6f000',
-    paddingVertical: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: 'center',
-    width: 200,
-  },
-  buttonSelected: {
-    backgroundColor: '#c6f000',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  inputDropdown: {
-    width: '100%',
-    paddingBottom: 15,
-    alignItems: 'center',
-  },
-  dateInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#86939e',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 12,
-    marginTop: 5
-  },
-  dateText: {
-    fontSize: 16,
-    color: '#000',
+    height: '30%',
   },
 
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  inputsContainer: {
+    backgroundColor: 'green',
+    height: '50%',
+    width: '90%',
+    justifyContent: 'space-evenly', 
+    alignItems: 'center',      
+    flexDirection: 'column',      
   },
-  pickerContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
+
+  buttonsContainer: {
+    backgroundColor: 'red',
+    height: '20%',
+    width: '90%',
+    justifyContent: 'space-evenly', 
+    alignItems: 'center',      
+    flexDirection: 'column',      
+  },
+
+  button: {
     borderRadius: 10,
-    alignItems: 'center',
+    height: '30%',
+    width: '80%',
+    alignItems: 'center', 
+    backgroundColor: theme.colorDarkGreen,
+    justifyContent: 'center',
   },
-  confirmButton: {
-    marginTop: 10,
-    backgroundColor: '#c6f000',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+
+  buttonText: {
+    color: theme.colorLightGreen,
+    fontSize: 14,
+    fontFamily: 'Graduate'
   },
-  confirmButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  photoAdd:{
-    backgroundColor: theme.colorLightGreen,
-    padding:10,
-    borderWidth:5,
-    borderColor: theme.colorDarkGreen,
-    borderRadius:50,
-    marginTop:-40,
-    marginLeft:70,
-  },
-  profileImage: {
-    alignItems: 'center',
-  },
-  profileImageContainer: {
-    alignItems: 'center',
+
+  inputContainer: {
+    backgroundColor: 'white',
+    height: '10%',
+    width: '80%',
   },
 });
