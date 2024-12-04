@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Modal
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
-import firestore, { firebase } from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+
 import DatePicker from 'react-native-date-picker';
 import { Platform } from 'react-native';
 import { theme } from '@/assets/theme';
@@ -53,7 +52,7 @@ export default function Perfil() {
   const [dri, setDri] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   
-  // Função para buscar dados do usuário no Firestore
+  /* Função para buscar dados do usuário no Firestore
   const fetchUserData = async () => {
     console.log('useEffect executado - buscando dados do usuário');
     try {
@@ -96,8 +95,8 @@ export default function Perfil() {
       console.error('Erro ao buscar os dados do usuário:', error);
     }
   };
-  
-  // Função para salvar as atualizações do perfil do usuário
+  */
+  /* Função para salvar as atualizações do perfil do usuário
   const handleSave = async () => {
     Alert.alert(
       'Confirmação',
@@ -174,7 +173,7 @@ export default function Perfil() {
   useEffect(() => {
     fetchUserData();
   }, []);
-
+*/
   // Função para confirmar a data de nascimento
   const handleConfirm = () => {
     // Verifica se a data está corretamente definida e atualiza o estado
@@ -238,7 +237,7 @@ export default function Perfil() {
   };
 
 */
- // Função para deslogar o usuário com confirmação
+ /*Função para deslogar o usuário com confirmação
   const handleLogOut = () => {
 
     Alert.alert(
@@ -265,7 +264,7 @@ export default function Perfil() {
         }
         ])
   };
-
+*/
   // Função para alternar o estado de edição de um campo específico
   const handleEditToggle = (field: keyof typeof isEditing) => {
     setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));

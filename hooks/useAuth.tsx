@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+/*import { useState, useEffect } from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 //Funcao para receber as informaces do utilizador
@@ -20,4 +20,4 @@ export function useAuth() {
     user,
     loading: initializing,
   };
-}
+}*/
