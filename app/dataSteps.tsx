@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { Ionicons, FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import { theme } from '@/assets/theme';
 import * as Progress from 'react-native-progress';
 import StepsSettingsModal from '@/components/stepsSettings';
@@ -51,12 +51,12 @@ const StepsScreen: React.FC = () => {
       {/* Info Cards */}
       <View style={styles.infoCards}>
         <View style={styles.card}>
-          <FontAwesome name="fire" size={24} color="#000" />
+          <FontAwesome6 name="fire-flame-curved" size={30} color="#000" />
           <Text style={styles.cardText}>54 Kcal</Text>
           <Text style={styles.cardSubtitle}>Calories</Text>
         </View>
         <View style={styles.card}>
-          <FontAwesome name="male" size={24} color="#000" />
+          <FontAwesome5 name="walking" size={30} color="#000" />
           <Text style={styles.cardText}>0.54 KM</Text>
           <Text style={styles.cardSubtitle}>Distance</Text>
         </View>

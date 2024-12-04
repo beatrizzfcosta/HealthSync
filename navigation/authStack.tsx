@@ -7,6 +7,9 @@ import ProfileScreen from '../app/profile';
 import DataWaterScreen from '../app/dataWater';
 import DataStepsScreen from '../app/dataSteps';
 import AlertSettingsScreen from '../app/alerts';
+import HomeSettingScreen from '../app/homePage';
+import StepsScreen from '../app/dataSteps';
+import ActivityScreen from '../app/dataActivities'
 
 const Stack = createStackNavigator();
 
@@ -21,7 +24,7 @@ export default function AuthStack() {
       }}
     >
       <Stack.Screen name="Sign In" component={SignInScreen} />
-      <Stack.Screen name="Sign Up" component={AlertSettingsScreen} />
+      <Stack.Screen name="Sign Up" component={ActivityScreen} />
     </Stack.Navigator>
   );
 }

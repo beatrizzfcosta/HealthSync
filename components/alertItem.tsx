@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
       borderBottomWidth: 3,
       borderColor: theme.colorDarkGreen,
       gap: 8,
-      height:80
+      height:90
   },
   alertsHeader: {
       alignItems: 'center',
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
   alertTitle: {
       fontFamily: 'graduate',
-      fontSize: 15
+      fontSize: 18
   },
   reminderContainer:{
       flexDirection:'row',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   reminderText:{
       display:'flex',
-      fontSize: 10,
+      fontSize: 12,
       fontFamily: 'graduate',
       alignItems: 'center',
       width:'60%'
