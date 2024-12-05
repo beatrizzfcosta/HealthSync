@@ -9,6 +9,7 @@ import AlertSettingsScreen from '../app/alerts';
 import HomeSettingScreen from '../app/homePage';
 import StepsScreen from '../app/dataSteps';
 import ActivityScreen from '../app/dataActivities';
+import HomeScreen from '../app/homePage';
 const Stack = createStackNavigator();
 
 function TabNavigator() {
@@ -54,10 +55,14 @@ function TabNavigator() {
 export default function UserStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
       {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
       <Stack.Screen name="DataWater" component={DataWaterScreen} />
       <Stack.Screen name="DataSteps" component={DataStepsScreen} />
       <Stack.Screen name="AlertSettings" component={AlertSettingsScreen} />
+      <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
+      <Stack.Screen name="Steps" component={StepsScreen} />
+      <Stack.Screen name="Activity" component={ActivityScreen} />
     </Stack.Navigator>
   );
 }

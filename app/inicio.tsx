@@ -13,9 +13,9 @@ const image = {
 export default function Index({ navigation }: { navigation: any }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  //const handleLogin = () => {
-  //  navigation.navigate('signIn');
-  //};
+  const handleLogin = () => {
+    navigation.navigate('signIn');
+  };
 
   useEffect(() => {
     Font.loadAsync({
@@ -45,7 +45,7 @@ export default function Index({ navigation }: { navigation: any }) {
               name="angle-double-up"
               color="white"
               size={70}
-              onPress={() => navigation.navigate('Sign In')}
+              onPress={handleLogin}
             />
           </TouchableOpacity>
         </View>

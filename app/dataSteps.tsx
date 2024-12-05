@@ -26,7 +26,12 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity>
-          <FontAwesome name="arrow-left" size={24} color="black" />
+          <FontAwesome
+            name="arrow-left"
+            size={24}
+            color="black"
+            onPress={() => navigation.navigate('Home')}
+          />
         </TouchableOpacity>
         <Text style={styles.title}>Steps Tracker</Text>
         <TouchableOpacity>

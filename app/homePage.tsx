@@ -78,17 +78,27 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </TouchableOpacity>
       </View>
       <View style={styles.highlightsContainer}>
-        <View style={styles.highlightBox}>
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('DataSteps')}
+        >
           <Ionicons name="footsteps" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>STEPS</Text>
           <Text style={styles.highlightValue}>11,250</Text>
-        </View>
-        <View style={styles.highlightBox}>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('Activity')}
+        >
           <FontAwesome5 name="walking" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>ACTIVITY</Text>
           <Text style={styles.highlightValue}>0 TODAY</Text>
-        </View>
-        <View style={styles.highlightBox}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('DataWater')}
+        >
           <FontAwesome6
             name="glass-water-droplet"
             size={30}
@@ -96,12 +106,12 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           />
           <Text style={styles.highlightTitle}>WATER</Text>
           <Text style={styles.highlightValue}>0 of 1,900ML</Text>
-        </View>
-        <View style={styles.highlightBox}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.highlightBox}>
           <Ionicons name="scale-outline" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>WEIGHT</Text>
           <Text style={styles.highlightValue}>SET WEIGHT</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
