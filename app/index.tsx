@@ -28,12 +28,11 @@ export default function Index() {
   //   setupNotificationChannel();
   // }, []);
 
-
   return (
     //Abrir a RootNavigation para verificar se o utilizador está ativo
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1}}
+      style={{ flex: 1 }}
     >
       <RootNavigation />
     </KeyboardAvoidingView>

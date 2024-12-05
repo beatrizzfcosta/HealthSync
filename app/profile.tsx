@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Modal, Alert, Image, Button } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  Modal,
+  Alert,
+  Image,
+  Button,
+} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -8,8 +19,7 @@ import DatePicker from 'react-native-date-picker';
 import { Platform } from 'react-native';
 import { theme } from '@/assets/theme';
 
-export default function Perfil() {
-  
+export default function Perfil({ navigation }: { navigation: any }) {
   // Estados para definir quais campos estão em modo de edição
   const [isEditing, setIsEditing] = useState({
     username: false,
@@ -39,7 +49,7 @@ export default function Perfil() {
   ];
 
   const [activityLevel, setActivityLevel] = useState<string>('');
-  
+
   // Níveis de atividade disponíveis
   const activityLevels = [
     { label: 'Sedentário', value: 'sedentary' },
@@ -51,7 +61,7 @@ export default function Perfil() {
 
   const [dri, setDri] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
-  
+
   /* Função para buscar dados do usuário no Firestore
   const fetchUserData = async () => {
     console.log('useEffect executado - buscando dados do usuário');
@@ -202,7 +212,7 @@ export default function Perfil() {
         }
         ])
   };*/
-  
+
   /* Função para adicionar foto de perfil
   const handleAddProfilePhoto = async () => {
     try {
@@ -237,7 +247,7 @@ export default function Perfil() {
   };
 
 */
- /*Função para deslogar o usuário com confirmação
+  /*Função para deslogar o usuário com confirmação
   const handleLogOut = () => {
 
     Alert.alert(
@@ -270,14 +280,12 @@ export default function Perfil() {
     setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-
   return (
     <View style={styles.container}>
-      
       <View style={styles.imageContainer}>
         <View></View>
       </View>
-      
+
       <View style={styles.inputsContainer}>
         <View style={styles.inputContainer}></View>
         <View style={styles.inputContainer}></View>
@@ -291,12 +299,11 @@ export default function Perfil() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Guardar</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
-
     </View>
   );
 }
@@ -304,10 +311,10 @@ export default function Perfil() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colorLightGreen,
-    alignItems:'center',
+    alignItems: 'center',
     height: '100%',
     width: '100%',
-    flex:1
+    flex: 1,
   },
 
   imageContainer: {
@@ -320,25 +327,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     height: '50%',
     width: '90%',
-    justifyContent: 'space-evenly', 
-    alignItems: 'center',      
-    flexDirection: 'column',      
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 
   buttonsContainer: {
     backgroundColor: 'red',
     height: '20%',
     width: '90%',
-    justifyContent: 'space-evenly', 
-    alignItems: 'center',      
-    flexDirection: 'column',      
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 
   button: {
     borderRadius: 10,
     height: '30%',
     width: '80%',
-    alignItems: 'center', 
+    alignItems: 'center',
     backgroundColor: theme.colorDarkGreen,
     justifyContent: 'center',
   },
@@ -346,7 +353,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: theme.colorLightGreen,
     fontSize: 14,
-    fontFamily: 'Graduate'
+    fontFamily: 'Graduate',
   },
 
   inputContainer: {
