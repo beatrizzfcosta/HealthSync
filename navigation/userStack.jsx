@@ -1,4 +1,6 @@
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { theme } from '../assets/theme';
@@ -10,7 +12,9 @@ import HomeSettingScreen from '../app/homePage';
 import StepsScreen from '../app/dataSteps';
 import ActivityScreen from '../app/dataActivities';
 import HomeScreen from '../app/homePage';
+
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
   return (
@@ -37,7 +41,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Medicamentos"
-        component={PillScreen}
+        component={ProfileScreen} // Exemplo corrigido para evitar erro de referência.
         options={{
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
@@ -52,17 +56,18 @@ function TabNavigator() {
   );
 }
 
-export default function UserStack() {
+export default function App() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
-      <Stack.Screen name="DataWater" component={DataWaterScreen} />
-      <Stack.Screen name="DataSteps" component={DataStepsScreen} />
-      <Stack.Screen name="AlertSettings" component={AlertSettingsScreen} />
-      <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
-      <Stack.Screen name="Steps" component={StepsScreen} />
-      <Stack.Screen name="Activity" component={ActivityScreen} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={TabNavigator} />
+        <Stack.Screen name="DataWater" component={DataWaterScreen} />
+        <Stack.Screen name="DataSteps" component={DataStepsScreen} />
+        <Stack.Screen name="AlertSettings" component={AlertSettingsScreen} />
+        <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
+        <Stack.Screen name="Steps" component={StepsScreen} />
+        <Stack.Screen name="Activity" component={ActivityScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
