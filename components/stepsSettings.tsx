@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Modal,
   TouchableWithoutFeedback,
-  FlatList,
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import  WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { theme } from '@/assets/theme';
 
 interface WaterSettingsModalProps {
@@ -23,28 +22,18 @@ const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [dailyGoal, setDailyGoal] = useState('2000');
-  const [units, setUnits] = useState('');
-  const [selectedAmount, setSelectedAmount] = useState(3000);
-  const [showNotification, setShowNotification] = useState(false)
-  const flatListRef = React.useRef<FlatList<any>>(null);
-  const amounts = [3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000];
-  const itemWidth = 120; // Largura de cada item
-  const initialIndex = amounts.indexOf(selectedAmount);
-  const initialOffset = initialIndex * itemWidth - itemWidth / 4; // Ajusta para centralizar com paddingHorizontal
+  const [selectedAmount, setSelectedAmount] = useState(7000);
+  const [showNotification, setShowNotification] = useState(false);
 
-  React.useEffect(() => {
-    // Role automaticamente para o valor inicial (250) ao carregar a tela
-    if (flatListRef.current) {
-        flatListRef.current.scrollToOffset({
-            offset: initialOffset,
-            animated: false, // Sem animação para o carregamento inicial
-        });
-    }
-}, []);
+  const amounts = [
+    3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500,
+    8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500,
+    13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500,
+    18000, 18500, 19000, 19500, 20000,
+  ];
 
   const handleSave = () => {
-    onSave(dailyGoal.toString(), units);
+    onSave(selectedAmount.toString(), '');
     onClose(); // Fecha o modal após salvar
   };
 
@@ -64,75 +53,50 @@ const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
                   <FontAwesome name="times" size={24} color="black" />
                 </TouchableOpacity>
                 <Text style={styles.modalTitle}>Steps Settings</Text>
-                <TouchableOpacity style={styles.helpButton}  
-                  onPressIn={() => setShowNotification(true)} // Mostra a notificação ao pressionar
-                  onPressOut={() => setShowNotification(false)} // Esconde a notificação ao soltar
+                <TouchableOpacity
+                  style={styles.helpButton}
+                  onPressIn={() => setShowNotification(true)}
+                  onPressOut={() => setShowNotification(false)}
                 >
                   <FontAwesome5 name="question-circle" size={24} color="black" />
                 </TouchableOpacity>
               </View>
 
-               {/* Notificação */}
-               {showNotification && (
+              {/* Notificação */}
+              {showNotification && (
                 <View style={styles.notification}>
                   <Text style={styles.notificationText}>
-                    The Steps helps you to burn calouries
+                    The Steps helps you to burn calories
                   </Text>
                 </View>
               )}
 
-              {/* Formulário */}
-              {/* Carrossel Vertical */}
-              <View style={styles.carouselContainer}>
-                    <FlatList
-                        ref={flatListRef}
-                        data={amounts}
-                        keyExtractor={(item) => item.toString()}
-                        
-                        showsVerticalScrollIndicator={false}
-                        snapToAlignment="center"
-                        contentContainerStyle={{
-                            paddingVertical: (75), 
-                        }}
-                        onScrollEndDrag={(event) => {
-                            const offset = event.nativeEvent.contentOffset.y;
-                            const index = Math.round(offset / 50); // Calcula o índice baseado no deslocamento
-                            setSelectedAmount(amounts[index]);
-                        }}
-                        decelerationRate="fast"
-                        onMomentumScrollEnd={(event) => {
-                            const offset = event.nativeEvent.contentOffset.y;
-                            const index = Math.round(offset / 50); // Divisão pela largura do item
-                            setSelectedAmount(amounts[index]);
-                        }}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={[
-                                    styles.carouselItem,
-                                    item === selectedAmount && styles.selectedCarouselItem, // Adiciona destaque ao item selecionado
-                                ]}
-                                onPress={() => {
-                                    const index = amounts.indexOf(item);
-                                    setSelectedAmount(item);
-                                    flatListRef.current?.scrollToOffset({
-                                        offset: index * 50, // Calcula a posição para centralizar
-                                        animated: true,
-                                    });
-                                }}
-                            >
-                                <Text
-                                    style={[
-                                        styles.carouselText,
-                                        item === selectedAmount && styles.selectedCarouselText,
-                                    ]}
-                                >
-                                    {item} ml
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                    />
+              {/* Wheel Picker */}
+              <View style={styles.pickerContainer}>
+                <WheelPickerExpo
+                  height={200}
+                  width={150}
+                  items={amounts.map((amount) => ({
+                    label: `${amount} steps`,
+                    value: amount,
+                  }))}
+                  initialSelectedIndex={amounts.indexOf(selectedAmount)}
+                  onChange={({ item }) => setSelectedAmount(item.value)}
+                  renderItem={(props) => (
+                    <Text
+                      style={[ 
+                        {
+                          fontSize: props.fontSize,
+                          fontFamily: 'graduate'
+                        },
+                      ]}
+                    >
+                      {props.label}
+                    </Text>
+                  )}
+                />
+              </View>
 
-                </View>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
@@ -166,7 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 10,  
+    marginBottom: 10,
   },
   closeButton: {
     position: 'absolute',
@@ -179,7 +143,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'Graduate'
+    fontFamily: 'Graduate',
   },
   notification: {
     backgroundColor: '#e5f4e1',
@@ -197,32 +161,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Graduate',
   },
-  carouselContainer: {
+  pickerContainer: {
     marginVertical: 20,
     width: '100%',
-    height:200,
-    alignItems: 'center'
-},
- 
-  carouselItem: {
-    width: 100, // Largura de cada item
-    height: 50, // Altura de cada item
-    justifyContent: 'center',
     alignItems: 'center',
-},
-carouselText: {
-    fontSize: 16,
-    color: '#000',
-    fontFamily: 'Graduate'
-},
-selectedCarouselText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: '#000',
-},
-selectedCarouselItem:{
-
-},
+  },
   saveButton: {
     backgroundColor: theme.colorDarkGreen,
     padding: 10,
@@ -234,14 +177,14 @@ selectedCarouselItem:{
   saveButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontFamily: 'Graduate'
+    fontFamily: 'Graduate',
   },
   restoreDefaults: {
     marginTop: 10,
     textAlign: 'center',
     textDecorationLine: 'underline',
     fontFamily: 'Graduate',
-    color: 'red'
+    color: 'red',
   },
 });
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -12,6 +11,8 @@ import HomeSettingScreen from '../app/homePage';
 import StepsScreen from '../app/dataSteps';
 import ActivityScreen from '../app/dataActivities';
 import HomeScreen from '../app/homePage';
+import WeightInScreen from '../app/weightIn';
+import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 //const Tab = createBottomTabNavigator();
@@ -58,6 +59,7 @@ const Stack = createStackNavigator();
 
 export default function UserStack() {
   return (
+    <NavigationContainer>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
@@ -67,6 +69,8 @@ export default function UserStack() {
       <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
       <Stack.Screen name="Steps" component={StepsScreen} />
       <Stack.Screen name="Activity" component={ActivityScreen} />
+      <Stack.Screen name="WeightIn" component ={WeightInScreen}/>
     </Stack.Navigator>
+    </NavigationContainer>
   );
 }

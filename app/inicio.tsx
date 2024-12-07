@@ -5,7 +5,7 @@ import * as Font from 'expo-font';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-
+import { styles } from './styles/inicioStyles'
 const image = {
   uri: 'https://cravenutritionalcooking.com/wp-content/uploads/2023/04/filip-mroz-XCkRGOX2VgM-unsplash-1-1024x832.jpg',
 };
@@ -53,30 +53,3 @@ export default function Index({ navigation }: { navigation: any }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    /* @info Make the containing view fill the screen */
-    flex: 1,
-    flexDirection: 'column',
-  },
-  content: {
-    height: '40%',
-    backgroundColor: theme.colorDarkGreen,
-    color: theme.colorWhite,
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  image: {
-    /* @info Make the image fill the containing view */
-    flex: 1,
-    /* @info Scale up the image to fill the container, preserving aspect ratio */
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    display: 'flex',
-    padding: 20,
-  },
-});

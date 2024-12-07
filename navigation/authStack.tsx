@@ -10,11 +10,13 @@ import AlertSettingsScreen from '../app/alerts';
 import HomeSettingScreen from '../app/homePage';
 import StepsScreen from '../app/dataSteps';
 import ActivityScreen from '../app/dataActivities';
+import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
 export default function AuthStack() {
   return (
+    <NavigationContainer>
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
@@ -27,5 +29,6 @@ export default function AuthStack() {
       <Stack.Screen name="Sign In" component={SignInScreen} />
       <Stack.Screen name="Sign Up" component={SignUpScreen} />
     </Stack.Navigator>
+    </NavigationContainer>
   );
 }
