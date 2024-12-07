@@ -13,7 +13,7 @@ import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import { theme } from '@/assets/theme';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+//import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FontAwesome } from '@expo/vector-icons';

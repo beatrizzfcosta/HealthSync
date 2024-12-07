@@ -10,12 +10,12 @@ const image = {
   uri: 'https://cravenutritionalcooking.com/wp-content/uploads/2023/04/filip-mroz-XCkRGOX2VgM-unsplash-1-1024x832.jpg',
 };
 
-export default function Index() {
+export default function Index({ navigation }: { navigation: any }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  //const handleLogin = () => {
-  //  navigation.navigate('signIn');
-  //};
+  const handleLogin = () => {
+    navigation.navigate('signIn');
+  };
 
   useEffect(() => {
     Font.loadAsync({
@@ -41,7 +41,12 @@ export default function Index() {
         </Text>
         <View style={styles.button}>
           <TouchableOpacity>
-            <FontAwesome name="angle-double-up" color="white" size={70} />
+            <FontAwesome
+              name="angle-double-up"
+              color="white"
+              size={70}
+              onPress={handleLogin}
+            />
           </TouchableOpacity>
         </View>
       </View>

@@ -1,42 +1,60 @@
-import { FontAwesome, FontAwesome5, FontAwesome6, Ionicons } from '@expo/vector-icons';
+import {
+  FontAwesome,
+  FontAwesome5,
+  FontAwesome6,
+  Ionicons,
+} from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import { theme } from '@/assets/theme';
 
-const HomeScreen: React.FC = () => {
-    const [userProfilePicture, setUserProfilePicture] = useState<string | null>(null);
-    const currentDate = new Date().toLocaleDateString('en-US', {
-        weekday: 'long', // Nome do dia (ex: Monday)
-        year: 'numeric', // Ano completo (ex: 2024)
-        month: 'long',   // Nome completo do mês (ex: December)
-        day: 'numeric',  // Número do dia (ex: 4)
-      });
+export default function HomeScreen({ navigation }: { navigation: any }) {
+  const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
+    null
+  );
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', // Nome do dia (ex: Monday)
+    year: 'numeric', // Ano completo (ex: 2024)
+    month: 'long', // Nome completo do mês (ex: December)
+    day: 'numeric', // Número do dia (ex: 4)
+  });
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-                <TouchableOpacity >
-                    <FontAwesome name='heartbeat'
-                        size={30}
-                        color={theme.colorDarkGreen}
-                        />
-                </TouchableOpacity>
-                <Text style={styles.title}>Home</Text>
-                <TouchableOpacity
-                >
-                    {userProfilePicture ? (
-                        <Image
-                            source={{ uri: userProfilePicture }}
-                            style={styles.profileImage}
-                        />
-                    ) : (
-                        <FontAwesome name="user-circle" size={35} color={theme.colorDarkGreen} />
-                    )}
-                </TouchableOpacity>
-            </View>
-      
-       {/* Current Date */}
-       <Text style={styles.currentDate}>{currentDate}</Text>
+        <TouchableOpacity>
+          <FontAwesome
+            name="heartbeat"
+            size={30}
+            color={theme.colorDarkGreen}
+          />
+        </TouchableOpacity>
+        <Text style={styles.title}>Home</Text>
+        <TouchableOpacity>
+          {userProfilePicture ? (
+            <Image
+              source={{ uri: userProfilePicture }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <FontAwesome
+              name="user-circle"
+              size={35}
+              color={theme.colorDarkGreen}
+            />
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {/* Current Date */}
+      <Text style={styles.currentDate}>{currentDate}</Text>
       {/* Alerts Section */}
       <Text style={styles.sectionTitle}>ALERTS</Text>
       <View style={styles.alertContainer}>
@@ -60,77 +78,79 @@ const HomeScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.highlightsContainer}>
-        <View style={styles.highlightBox}>
-        <Ionicons name='footsteps'
-                        size={30}
-                        color={theme.colorWhite}
-                        />
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('DataSteps')}
+        >
+          <Ionicons name="footsteps" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>STEPS</Text>
           <Text style={styles.highlightValue}>11,250</Text>
-        </View>
-        <View style={styles.highlightBox}>
-        <FontAwesome5 name='walking'
-                        size={30}
-                        color={theme.colorWhite}
-                        />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('Activity')}
+        >
+          <FontAwesome5 name="walking" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>ACTIVITY</Text>
           <Text style={styles.highlightValue}>0 TODAY</Text>
-        </View>
-        <View style={styles.highlightBox}>
-        <FontAwesome6 name='glass-water-droplet'
-                        size={30}
-                        color={theme.colorWhite}
-                        />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('DataWater')}
+        >
+          <FontAwesome6
+            name="glass-water-droplet"
+            size={30}
+            color={theme.colorWhite}
+          />
           <Text style={styles.highlightTitle}>WATER</Text>
           <Text style={styles.highlightValue}>0 of 1,900ML</Text>
-        </View>
-        <View style={styles.highlightBox}>
-        <Ionicons name='scale-outline'
-                        size={30}
-                        color={theme.colorWhite}
-                        />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.highlightBox}>
+          <Ionicons name="scale-outline" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>WEIGHT</Text>
           <Text style={styles.highlightValue}>SET WEIGHT</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colorLightGreen,
     padding: 20,
-},
-header: {
+  },
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-},
-title: {
+  },
+  title: {
     fontSize: 25,
     fontWeight: 'bold',
     fontFamily: 'Graduate',
     textAlign: 'center',
-},
-profileImage: {
+  },
+  profileImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
     borderRadius: 30,
-},
+  },
   currentDate: {
     fontSize: 16,
     marginBottom: 20,
-    marginTop:20,
-    fontFamily:'graduate'
+    marginTop: 20,
+    fontFamily: 'graduate',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    fontFamily:'graduate'
+    fontFamily: 'graduate',
   },
   alertContainer: {
     backgroundColor: '#D9D9D9',
@@ -141,7 +161,7 @@ profileImage: {
   alertText: {
     fontSize: 16,
     marginBottom: 10,
-    fontFamily:'graduate'
+    fontFamily: 'graduate',
   },
   button: {
     backgroundColor: '#344E41',
@@ -151,7 +171,7 @@ profileImage: {
   },
   buttonText: {
     color: '#FFFFFF',
-    fontFamily:'graduate'
+    fontFamily: 'graduate',
   },
   highlightsHeader: {
     flexDirection: 'row',
@@ -163,7 +183,7 @@ profileImage: {
     fontSize: 12,
     color: '#344E41',
     fontWeight: 'bold',
-    fontFamily:'graduate'
+    fontFamily: 'graduate',
   },
   highlightsContainer: {
     flexDirection: 'row',
@@ -178,16 +198,14 @@ profileImage: {
     marginBottom: 10,
   },
   highlightTitle: {
-    marginTop:10,
+    marginTop: 10,
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily:'graduate'
+    fontFamily: 'graduate',
   },
   highlightValue: {
     color: '#FFFFFF',
     fontSize: 14,
   },
 });
-
-export default HomeScreen;

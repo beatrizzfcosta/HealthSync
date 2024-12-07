@@ -1,13 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/Home';
-import PillScreen from '../screens/Pills';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import PermissionScreen from '../screens/Permission';
-import RegisterPillsScreen from '../screens/RegisterPills';
 import { theme } from '../assets/theme';
-const Tab = createBottomTabNavigator();
+import ProfileScreen from '../app/profile';
+import DataWaterScreen from '../app/dataWater';
+import DataStepsScreen from '../app/dataSteps';
+import AlertSettingsScreen from '../app/alerts';
+import HomeSettingScreen from '../app/homePage';
+import StepsScreen from '../app/dataSteps';
+import ActivityScreen from '../app/dataActivities';
+import HomeScreen from '../app/homePage';
 const Stack = createStackNavigator();
 
 function TabNavigator() {
@@ -53,10 +55,14 @@ function TabNavigator() {
 export default function UserStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={TabNavigator} />
-      <Stack.Screen name="Permission" component={PermissionScreen} />
-      <Stack.Screen name="RegisterPills" component={RegisterPillsScreen} />
-      <Stack.Screen name="Pills" component={TabNavigator} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
+      <Stack.Screen name="DataWater" component={DataWaterScreen} />
+      <Stack.Screen name="DataSteps" component={DataStepsScreen} />
+      <Stack.Screen name="AlertSettings" component={AlertSettingsScreen} />
+      <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
+      <Stack.Screen name="Steps" component={StepsScreen} />
+      <Stack.Screen name="Activity" component={ActivityScreen} />
     </Stack.Navigator>
   );
 }
