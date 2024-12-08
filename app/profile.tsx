@@ -14,10 +14,11 @@ import {
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
-
+import { styles } from './styles/profileStyles';
 import DatePicker from 'react-native-date-picker';
 import { Platform } from 'react-native';
 import { theme } from '@/assets/theme';
+import * as Font from 'expo-font';
 
 export default function Perfil({ navigation }: { navigation: any }) {
   // Estados para definir quais campos estão em modo de edição
@@ -40,6 +41,8 @@ export default function Perfil({ navigation }: { navigation: any }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState<string>('');
+  const [fontLoaded, setFontLoaded] = useState(false);
+  const [userProfilePicture, setUserProfilePicture] = useState<string | null>(null);
 
   // Opções de gênero disponíveis
   const genders = [
@@ -61,6 +64,15 @@ export default function Perfil({ navigation }: { navigation: any }) {
 
   const [dri, setDri] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  useEffect(() => {
+    Font.loadAsync({
+      Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
+    }).then(() => setFontLoaded(true));
+  }, []);
+  if (!fontLoaded) {
+    return null; // Ou um indicador de carregamento
+  }
 
   /* Função para buscar dados do usuário no Firestore
   const fetchUserData = async () => {
@@ -283,16 +295,53 @@ export default function Perfil({ navigation }: { navigation: any }) {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <View></View>
+        {userProfilePicture ? (
+            <Image
+              source={{ uri: userProfilePicture }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <FontAwesome
+              name="user-circle"
+              size={125}
+              color={theme.colorDarkGreen}
+            />
+          )}
+
+        <View style={styles.detailsContainer}>
+          <Text style={styles.secText}>
+            Nome
+          </Text>
+
+          <Text style={styles.secText}>
+            Email
+          </Text>
+        </View>
+        
       </View>
 
-      <View style={styles.inputsContainer}>
-        <View style={styles.inputContainer}></View>
-        <View style={styles.inputContainer}></View>
-        <View style={styles.inputContainer}></View>
-        <View style={styles.inputContainer}></View>
-        <View style={styles.inputContainer}></View>
-        <View style={styles.inputContainer}></View>
+      <View style={styles.inputsOutsideContainer}>
+        <Text
+          style={{
+          paddingTop: 15,
+          textAlign: 'left', 
+          fontFamily: 'Graduate',
+          fontSize: 20,
+          color: theme.colorDarkGreen,
+          width: '90%',
+        }}
+        >
+        Personal Details
+        </Text>
+
+        <View style={styles.inputsInsideContainer}>
+          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer}></View>
+        </View>
       </View>
 
       <View style={styles.buttonsContainer}>
@@ -307,58 +356,3 @@ export default function Perfil({ navigation }: { navigation: any }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colorLightGreen,
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
-
-  imageContainer: {
-    backgroundColor: 'black',
-    width: '90%',
-    height: '30%',
-  },
-
-  inputsContainer: {
-    backgroundColor: 'green',
-    height: '50%',
-    width: '90%',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
-
-  buttonsContainer: {
-    backgroundColor: 'red',
-    height: '20%',
-    width: '90%',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
-
-  button: {
-    borderRadius: 10,
-    height: '30%',
-    width: '80%',
-    alignItems: 'center',
-    backgroundColor: theme.colorDarkGreen,
-    justifyContent: 'center',
-  },
-
-  buttonText: {
-    color: theme.colorLightGreen,
-    fontSize: 14,
-    fontFamily: 'Graduate',
-  },
-
-  inputContainer: {
-    backgroundColor: 'white',
-    height: '10%',
-    width: '80%',
-  },
-});
