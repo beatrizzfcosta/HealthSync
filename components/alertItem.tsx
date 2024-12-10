@@ -17,7 +17,7 @@ interface AlertProps {
   onIntervalChange?: (value: number) => void;
 }
 
-const AlertItem: React.FC<AlertProps> = ({
+const AlertItem = ({
   title,
   switchOn,
   onToggle,
@@ -27,7 +27,7 @@ const AlertItem: React.FC<AlertProps> = ({
   onTimeChange,
   notificationInterval,
   onIntervalChange,
-}) => {
+}: AlertProps) => {
   // Converte timeValue em um objeto Date para uso no DatePicker
   const convertToDate = (time?: { hours: number; minutes: number }): Date => {
     const now = new Date();
@@ -39,6 +39,7 @@ const AlertItem: React.FC<AlertProps> = ({
       time?.minutes || 0
     );
   };
+
   // Garantia de que timeValue é um objeto Date
   const validTimeValue = convertToDate(timeValue);
 

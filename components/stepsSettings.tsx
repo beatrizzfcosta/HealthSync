@@ -17,11 +17,11 @@ interface WaterSettingsModalProps {
   onSave: (dailyGoal: string, units: string) => void;
 }
 
-const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
+const StepsSettingsModal = ({
   visible,
   onClose,
   onSave,
-}) => {
+} : WaterSettingsModalProps) => {
   const [selectedAmount, setSelectedAmount] = useState(7000);
   const [showNotification, setShowNotification] = useState(false);
 

@@ -6,14 +6,13 @@ import { theme } from '../assets/theme';
 import { FontAwesome } from '@expo/vector-icons';
 import { styles } from './styles/weightInStyles';
 
-const WeightInScreen: React.FC = () => {
+export default function WeightInScreen({ navigation }: { navigation: any }) {
   const [integerPart, setIntegerPart] = useState<number>(45);
   const [decimalPart, setDecimalPart] = useState<number>(0);
   const [unit, setUnit] = useState<string>('kg');
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
     null
   );
-  const navigation = useNavigation();
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -121,4 +120,3 @@ const WeightInScreen: React.FC = () => {
   );
 };
 
-export default WeightInScreen;
