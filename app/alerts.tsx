@@ -14,10 +14,10 @@ import {
   Switch,
   Platform,
 } from 'react-native';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 import SwitchToggle from 'react-native-switch-toggle';
-import AlertItem from '@/components/alertItem';
-import {styles} from './styles/alertsStyles'
+import AlertItem from '../components/alertItem';
+import { styles } from './styles/alertsStyles';
 
 type AlertWithInterval = {
   enabled: boolean;

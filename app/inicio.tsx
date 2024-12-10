@@ -5,7 +5,7 @@ import * as Font from 'expo-font';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import { styles } from './styles/inicioStyles'
+import { styles } from './styles/inicioStyles';
 const image = {
   uri: 'https://cravenutritionalcooking.com/wp-content/uploads/2023/04/filip-mroz-XCkRGOX2VgM-unsplash-1-1024x832.jpg',
 };

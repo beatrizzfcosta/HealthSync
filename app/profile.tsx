@@ -17,7 +17,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 import DatePicker from 'react-native-date-picker';
 import { Platform } from 'react-native';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 
 export default function Perfil({ navigation }: { navigation: any }) {
   // Estados para definir quais campos estão em modo de edição

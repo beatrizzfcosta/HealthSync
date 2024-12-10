@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 import { FontAwesome } from '@expo/vector-icons';
-import {styles} from './styles/weightInStyles';
+import { styles } from './styles/weightInStyles';
 
 const WeightInScreen: React.FC = () => {
   const [integerPart, setIntegerPart] = useState<number>(45);
@@ -70,10 +70,10 @@ const WeightInScreen: React.FC = () => {
             onChange={({ item }) => setIntegerPart(item.value)}
             renderItem={(props) => (
               <Text
-                style={[ 
+                style={[
                   {
                     fontSize: props.fontSize,
-                    fontFamily: 'graduate'
+                    fontFamily: 'graduate',
                   },
                 ]}
               >
@@ -90,10 +90,10 @@ const WeightInScreen: React.FC = () => {
             onChange={({ item }) => setDecimalPart(item.value)}
             renderItem={(props) => (
               <Text
-                style={[ 
+                style={[
                   {
                     fontSize: props.fontSize,
-                    fontFamily: 'graduate'
+                    fontFamily: 'graduate',
                   },
                 ]}
               >
@@ -105,9 +105,12 @@ const WeightInScreen: React.FC = () => {
             height={300}
             width={100}
             initialSelectedIndex={['kg', 'lb', 'st'].indexOf(unit)}
-            items={[{ label: 'kg', value: 'kg' }, { label: 'lb', value: 'lb' }, { label: 'st', value: 'st' }]}
+            items={[
+              { label: 'kg', value: 'kg' },
+              { label: 'lb', value: 'lb' },
+              { label: 'st', value: 'st' },
+            ]}
             onChange={({ item }) => setUnit(item.value)}
-            
           />
         </View>
         <TouchableOpacity style={styles.saveButton} onPress={handleSavePress}>

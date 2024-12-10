@@ -13,8 +13,8 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import { theme } from '@/assets/theme';
-import { styles } from './styles/homePageStyles'
+import { theme } from '../assets/theme';
+import { styles } from './styles/homePageStyles';
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
@@ -108,7 +108,10 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           <Text style={styles.highlightTitle}>WATER</Text>
           <Text style={styles.highlightValue}>0 of 1,900ML</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.highlightBox} onPress={() => navigation.navigate('WeightIn')}>
+        <TouchableOpacity
+          style={styles.highlightBox}
+          onPress={() => navigation.navigate('WeightIn')}
+        >
           <Ionicons name="scale-outline" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>WEIGHT</Text>
           <Text style={styles.highlightValue}>SET WEIGHT</Text>
@@ -117,5 +120,3 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     </ScrollView>
   );
 }
-
-

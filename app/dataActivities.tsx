@@ -7,10 +7,10 @@ import {
   FontAwesome5,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
-import { theme } from '@/assets/theme';
-import * as Progress from 'react-native-progress';
-import StepsSettingsModal from '@/components/stepsSettings';
-import { styles } from './styles/dataActivitiesStyles'
+import { theme } from '../assets/theme';
+//import * as Progress from 'react-native-progress';
+import StepsSettingsModal from '../components/stepsSettings';
+import { styles } from './styles/dataActivitiesStyles';
 export default function ActivitiesScreen({ navigation }: { navigation: any }) {
   const [dailyGoal, setDailyGoal] = useState('7000');
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(

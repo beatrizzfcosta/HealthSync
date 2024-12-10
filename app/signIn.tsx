@@ -12,8 +12,8 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
-import { theme } from '@/assets/theme';
-import {styles} from './styles/signInStyles'
+import { theme } from '../assets/theme';
+import { styles } from './styles/signInStyles';
 
 export default function LoginPage({ navigation }: { navigation: any }) {
   const [mail, setMail] = useState('');
@@ -113,4 +113,3 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     </View>
   );
 }
-

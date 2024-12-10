@@ -8,8 +8,8 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
-import  WheelPickerExpo from 'react-native-wheel-picker-expo';
-import { theme } from '@/assets/theme';
+import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import { theme } from '../assets/theme';
 
 interface WaterSettingsModalProps {
   visible: boolean;
@@ -26,10 +26,10 @@ const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
   const [showNotification, setShowNotification] = useState(false);
 
   const amounts = [
-    3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500,
-    8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500,
-    13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500,
-    18000, 18500, 19000, 19500, 20000,
+    3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500,
+    9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000,
+    14500, 15000, 15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500,
+    20000,
   ];
 
   const handleSave = () => {
@@ -58,7 +58,11 @@ const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
                   onPressIn={() => setShowNotification(true)}
                   onPressOut={() => setShowNotification(false)}
                 >
-                  <FontAwesome5 name="question-circle" size={24} color="black" />
+                  <FontAwesome5
+                    name="question-circle"
+                    size={24}
+                    color="black"
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -84,10 +88,10 @@ const StepsSettingsModal: React.FC<WaterSettingsModalProps> = ({
                   onChange={({ item }) => setSelectedAmount(item.value)}
                   renderItem={(props) => (
                     <Text
-                      style={[ 
+                      style={[
                         {
                           fontSize: props.fontSize,
-                          fontFamily: 'graduate'
+                          fontFamily: 'graduate',
                         },
                       ]}
                     >

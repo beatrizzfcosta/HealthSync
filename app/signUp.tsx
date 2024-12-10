@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 //import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -19,7 +19,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { FontAwesome } from '@expo/vector-icons';
 import DatePicker from 'react-native-date-picker';
 //import { formatDate } from '../utils/formatDate'; // Ajuste o caminho conforme necessário
-import {styles} from './styles/signUpStyles'
+import { styles } from './styles/signUpStyles';
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -378,4 +378,3 @@ const handleIndex = () => {
     />
   );
 }
-

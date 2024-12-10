@@ -6,10 +6,10 @@ import {
   FontAwesome6,
   FontAwesome5,
 } from '@expo/vector-icons';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 import * as Progress from 'react-native-progress';
-import StepsSettingsModal from '@/components/stepsSettings';
-import { styles } from './styles/dataStepsStyles'
+import StepsSettingsModal from '../components/stepsSettings';
+import { styles } from './styles/dataStepsStyles';
 
 export default function StepsScreen({ navigation }: { navigation: any }) {
   const [dailyGoal, setDailyGoal] = useState('7000');

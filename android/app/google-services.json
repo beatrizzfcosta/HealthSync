@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "152216370944",
+    "project_id": "healthsync-7b1b5",
+    "storage_bucket": "healthsync-7b1b5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152216370944:android:40e661dae0b2fc84a8bde5",
+        "android_client_info": {
+          "package_name": "com.galaxies.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152216370944-bqnufbbl1m1lcdsvqrl3b7v6r8vi7kfs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADiOe5SPf_HWLhYbcgUMlbf3MG4s-uyyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152216370944-bqnufbbl1m1lcdsvqrl3b7v6r8vi7kfs.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "152216370944-t5i5618240p35p6vp41nqtqbh50glcot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.galaxies.firebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

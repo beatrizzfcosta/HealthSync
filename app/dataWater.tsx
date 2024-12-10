@@ -12,10 +12,10 @@ import {
   TouchableWithoutFeedback,
   Modal,
 } from 'react-native';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 import * as Progress from 'react-native-progress';
-import WaterSettingsModal from '@/components/waterSettings';
-import { styles } from './styles/dataWaterStyles'
+import WaterSettingsModal from '../components/waterSettings';
+import { styles } from './styles/dataWaterStyles';
 export default function WaterDataScreen({ navigation }: { navigation: any }) {
   const [dailyGoal, setDailyGoal] = useState('2000');
   const [units, setUnits] = useState('');
@@ -170,4 +170,3 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
     </View>
   );
 }
-

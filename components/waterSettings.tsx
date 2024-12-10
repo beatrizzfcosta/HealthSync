@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
-import { theme } from '@/assets/theme';
+import { theme } from '../assets/theme';
 
 interface WaterSettingsModalProps {
   visible: boolean;
@@ -24,7 +24,7 @@ const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
 }) => {
   const [dailyGoal, setDailyGoal] = useState('2000');
   const [units, setUnits] = useState('');
-  const [showNotification, setShowNotification] = useState(false)
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleSave = () => {
     onSave(dailyGoal, units);
@@ -47,16 +47,21 @@ const WaterSettingsModal: React.FC<WaterSettingsModalProps> = ({
                   <FontAwesome name="times" size={24} color="black" />
                 </TouchableOpacity>
                 <Text style={styles.modalTitle}>WATER SETTINGS</Text>
-                <TouchableOpacity style={styles.helpButton}  
+                <TouchableOpacity
+                  style={styles.helpButton}
                   onPressIn={() => setShowNotification(true)} // Mostra a notificação ao pressionar
                   onPressOut={() => setShowNotification(false)} // Esconde a notificação ao soltar
                 >
-                  <FontAwesome5 name="question-circle" size={24} color="black" />
+                  <FontAwesome5
+                    name="question-circle"
+                    size={24}
+                    color="black"
+                  />
                 </TouchableOpacity>
               </View>
 
-               {/* Notificação */}
-               {showNotification && (
+              {/* Notificação */}
+              {showNotification && (
                 <View style={styles.notification}>
                   <Text style={styles.notificationText}>
                     A daily water goal is based on your weight info
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 10,  
+    marginBottom: 10,
   },
   closeButton: {
     position: 'absolute',
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'Graduate'
+    fontFamily: 'Graduate',
   },
   notification: {
     backgroundColor: '#e5f4e1',
@@ -148,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginVertical: 10,
-    fontFamily: 'Graduate'
+    fontFamily: 'Graduate',
   },
   saveButton: {
     backgroundColor: theme.colorDarkGreen,
@@ -161,14 +166,14 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontFamily: 'Graduate'
+    fontFamily: 'Graduate',
   },
   restoreDefaults: {
     marginTop: 10,
     textAlign: 'center',
     textDecorationLine: 'underline',
     fontFamily: 'Graduate',
-    color: 'red'
+    color: 'red',
   },
 });
 
