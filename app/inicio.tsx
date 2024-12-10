@@ -14,7 +14,7 @@ export default function Index({ navigation }: { navigation: any }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const handleLogin = () => {
-    navigation.navigate('signIn');
+    navigation.navigate('Sign In');
   };
 
   useEffect(() => {

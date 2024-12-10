@@ -13,12 +13,12 @@ import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import { theme } from '../assets/theme';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-//import firestore from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FontAwesome } from '@expo/vector-icons';
 import DatePicker from 'react-native-date-picker';
-//import { formatDate } from '../utils/formatDate'; // Ajuste o caminho conforme necessário
+import { formatDate } from '../components/formatDate'; // Ajuste o caminho conforme necessário
 import { styles } from './styles/signUpStyles';
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [username, setUsername] = useState('');
@@ -50,58 +50,53 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   };
 
   // Adiciona um novo utilizador a base de dados
-  /* const handleRegister = async () => {
-        const auth = getAuth();
+  const handleRegister = async () => {
+    console.log('entrei');
 
-        if (password !== confirmPassword) {
-            console.error("As senhas não correspondem.");
-            // Aqui você pode exibir um alerta ou uma mensagem de erro para o usuário
-            return;
-        }
+    if (password !== confirmPassword) {
+      console.error('As senhas não correspondem.');
+      // Aqui você pode exibir um alerta ou uma mensagem de erro para o usuário
+      return;
+    }
 
-        try {
-            // Cria o usuário com e-mail e senha
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+    try {
+      const auth = getAuth();
+      console.log(auth);
+      // Cria o usuário com e-mail e senha
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
 
-            const formatBirthDate = formatDate(birthDate);
-            // Calcula o DRI antes de armazenar
-            const calculatedDri = calculateDRI(gender, parseFloat(weight), parseFloat(height), formatBirthDate.toString(), activityLevel);
-            const macroNutrientesGoal = calculateMacronutrientGoals(calculatedDri);
-            console.log(macroNutrientesGoal)
+      const formatBirthDate = formatDate(birthDate);
+      // Calcula o DRI antes de armazenar
 
-            // Referência ao documento do usuário
-            const userRef = firestore().collection('users').doc(user.uid);
+      // Referência ao documento do usuário
+      const userRef = firestore().collection('users').doc(user.uid);
 
-            // Adiciona dados adicionais em uma subcoleção
-            await userRef.collection('data').add({
-                username,
-                formatBirthDate,
-                height,
-                weight,
-                gender,
-                activityLevel,
-                dri: calculatedDri,
-                macroNutrientesGoal: macroNutrientesGoal
-            });
+      // Adiciona dados adicionais em uma subcoleção
+      await userRef.collection('data').add({
+        username,
+        formatBirthDate,
+        height,
+        weight,
+        gender,
+        activityLevel,
+      });
 
-            // Adicção das Refeições defaults para o utilizador 
+      // Adicção das Refeições defaults para o utilizador
 
-            const mealsRef = userRef.collection('meals');
-            await mealsRef.add({ name: 'Pequeno Almoço', time: '08:00', items: [] });
-            await mealsRef.add({ name: 'Almoço', time: '12:30', items: [] });
-            await mealsRef.add({ name: 'Jantar', time: '19:30', items: [] });
+      navigation.navigate('Sign In');
+      console.log('Registrado com sucesso');
+      // Redirecionar para outra tela, se necessário
+    } catch (error) {
+      console.error('Erro ao registrar:', error);
+      // Você pode adicionar uma mensagem de erro para o usuário aqui
+    }
+  };
 
-            navigation.navigate('login');
-            console.log('Registrado com sucesso');
-            // Redirecionar para outra tela, se necessário
-        } catch (error) {
-            console.error("Erro ao registrar:", error);
-            // Você pode adicionar uma mensagem de erro para o usuário aqui
-        }
-    };
-
-*/
   const _renderItem = (item: {
     label:
       | string
@@ -121,56 +116,66 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   };
 
   // Verifica de todos os dados foram preenchidos
-  /*
-    const isFormValid = () => {
-        return username && email && gender && birthDate && height && weight && activityLevel && password == confirmPassword;
-    };
 
-    const handleRegisto = () => {
-        if(isFormValid()){
-        Alert.alert(
-            'Seus dados estão correctos?',
-            'Bem vindo a Calorize!',
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Registar',
-                    onPress: () => {
-                        handleRegister();
-                    },
-                },
-            ],
-            { cancelable: true }
-        );
-    }
-    else {
-        Alert.alert('Atenção', 'Todos os campos são obrigatórios. Preencha todos os campos antes de adicionar.');
-    }
-}
+  const isFormValid = () => {
+    return (
+      username &&
+      email &&
+      gender &&
+      birthDate &&
+      height &&
+      weight &&
+      password == confirmPassword
+    );
+  };
 
-const handleIndex = () => {
-    Alert.alert(
-        'Index',
-        'Deseja voltar ao index?',
+  const handleRegisto = () => {
+    if (isFormValid()) {
+      Alert.alert(
+        'Seus dados estão correctos?',
+        'Bem vindo a Calorize!',
         [
-            {
-                text: 'Cancelar',
-                style: 'cancel',
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+          {
+            text: 'Registar',
+            onPress: () => {
+              handleRegister();
             },
-            {
-                text: 'Voltar',
-                onPress: () => {
-                    navigation.navigate('index')
-                },
-            },
+          },
         ],
         { cancelable: true }
+      );
+    } else {
+      Alert.alert(
+        'Atenção',
+        'Todos os campos são obrigatórios. Preencha todos os campos antes de adicionar.'
+      );
+    }
+  };
+
+  const handleIndex = () => {
+    Alert.alert(
+      'Index',
+      'Deseja voltar ao index?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Voltar',
+          onPress: () => {
+            navigation.navigate('index');
+          },
+        },
+      ],
+      { cancelable: true }
     );
-}
-*/
+  };
+
   const renderContent = () => (
     <View style={styles.contentContainer}>
       <TouchableOpacity style={styles.icon}>
@@ -363,8 +368,8 @@ const handleIndex = () => {
         }
       />
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Registrar</Text>
+      <TouchableOpacity style={styles.button} onPress={handleRegisto}>
+        <Text style={styles.buttonText}>Registar</Text>
       </TouchableOpacity>
     </View>
   );

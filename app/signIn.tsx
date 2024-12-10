@@ -14,7 +14,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { theme } from '../assets/theme';
 import { styles } from './styles/signInStyles';
-
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 export default function LoginPage({ navigation }: { navigation: any }) {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,37 +22,36 @@ export default function LoginPage({ navigation }: { navigation: any }) {
 
   // Função que faz o login com email e password do utilizador e se assim for navegar para a homePage
 
-  /**const handleHomePage = async () => {
+  const handleHomePage = async () => {
     try {
       await auth().signInWithEmailAndPassword(mail, password);
       console.log('autenticado');
-
     } catch (error) {
-      console.error("Erro ao autenticar:", error);
+      console.error('Erro ao autenticar:', error);
       setErrorMessage('Senha ou email incorretos, tente novamente.');
     }
-  };*/
+  };
   // Navegação para a página Index
-  //const handleIndex = () => {
-  /*  Alert.alert(
-        'Index',
-        'Deseja voltar ao index?',
-        [
-            {
-                text: 'Cancelar',
-                style: 'cancel',
-            },
-            {
-                text: 'Voltar',
-                onPress: () => {
-                    navigation.navigate('index')
-                },
-            },
-        ],
-        { cancelable: true }
+  const handleIndex = () => {
+    Alert.alert(
+      'Index',
+      'Deseja voltar ao index?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Voltar',
+          onPress: () => {
+            navigation.navigate('index');
+          },
+        },
+      ],
+      { cancelable: true }
     );
-}
-*/
+  };
+
   // Navegação para página de registo
   const handleRegisto = () => {
     navigation.navigate('Sign Up');
@@ -102,7 +101,9 @@ export default function LoginPage({ navigation }: { navigation: any }) {
       ) : null}
 
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Sign In</Text>
+        <Text style={styles.buttonText} onPress={handleHomePage}>
+          Sign In
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity>
