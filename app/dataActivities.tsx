@@ -7,8 +7,9 @@ import {
   FontAwesome5,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
+import { MultiSelect } from 'react-native-element-dropdown';
 import { theme } from '../assets/theme';
-//import * as Progress from 'react-native-progress';
+import * as Progress from 'react-native-progress';
 import StepsSettingsModal from '../components/stepsSettings';
 import { styles } from './styles/dataActivitiesStyles';
 export default function ActivitiesScreen({ navigation }: { navigation: any }) {
@@ -16,6 +17,42 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
     null
   );
+  const [activities, setActivities] = useState<string[]>([]);
+  const activitiesData = [
+    { key: '1', value: 'Baking' },
+    { key: '2', value: 'Board Games' },
+    { key: '3', value: 'Camping' },
+    { key: '4', value: 'Calligraphy' },
+    { key: '5', value: 'Chess' },
+    { key: '6', value: 'Cooking' },
+    { key: '7', value: 'Cycling' },
+    { key: '8', value: 'Dancing' },
+    { key: '9', value: 'Fishing' },
+    { key: '10', value: 'Gardening' },
+    { key: '11', value: 'Hiking' },
+    { key: '12', value: 'Jogging' },
+    { key: '13', value: 'Knitting' },
+    { key: '14', value: 'Learning a Language' },
+    { key: '15', value: 'Meditation' },
+    { key: '16', value: 'Painting' },
+    { key: '17', value: 'Photography' },
+    { key: '18', value: 'Playing Basketball' },
+    { key: '19', value: 'Playing Guitar' },
+    { key: '20', value: 'Playing Piano' },
+    { key: '21', value: 'Playing Soccer' },
+    { key: '22', value: 'Playing Tennis' },
+    { key: '23', value: 'Reading' },
+    { key: '24', value: 'Rock Climbing' },
+    { key: '25', value: 'Scuba Diving' },
+    { key: '26', value: 'Singing' },
+    { key: '27', value: 'Sketching' },
+    { key: '28', value: 'Surfing' },
+    { key: '29', value: 'Swimming' },
+    { key: '30', value: 'Video Editing' },
+    { key: '31', value: 'Woodworking' },
+    { key: '32', value: 'Writing' },
+    { key: '33', value: 'Yoga' },
+  ];
   const currentProgress = 250 / parseInt(dailyGoal);
   const [isModalVisible, setIsModalVisible] = useState(false);
   function handleSaveSettings(dailyGoal: string, units: string): void {
@@ -61,7 +98,33 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
             showsText={true}
           />
         </View>
-
+        <View style={styles.activitiesCard}>
+          <View style={styles.activiCard}>
+            <MultiSelect
+              containerStyle={{
+                backgroundColor: theme.colorLightGreen,
+                borderColor: 'black',
+              }}
+              activeColor={theme.colorGreyGreen}
+              search={false}
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={activitiesData}
+              labelField="value"
+              valueField="value"
+              placeholder="Activities"
+              searchPlaceholder="Procurar..."
+              value={activities}
+              onChange={(item) => {
+                setActivities(item);
+              }}
+              selectedStyle={styles.selectedStyle}
+            />
+          </View>
+        </View>
         {/* Info Cards */}
         <View style={styles.infoCards}>
           <View style={styles.card}>

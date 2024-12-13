@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   alertContainer: {
     backgroundColor: '#D9D9D9',
-    borderRadius: 10,
+    borderRadius: 30,
     padding: 20,
     marginBottom: 10,
   },
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   button: {
     backgroundColor: '#344E41',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: 'center',
   },
   buttonText: {
@@ -78,7 +78,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#344E41',
     width: '48%',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 30,
     marginBottom: 10,
   },
   highlightTitle: {

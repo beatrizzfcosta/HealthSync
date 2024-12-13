@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
       marginTop: 30,
       backgroundColor: theme.colorDarkGreen,
       paddingVertical: 15,
-      borderRadius: 10,
+      borderRadius: 15,
       marginBottom: 15,
       alignItems: 'center',
       width: 200,

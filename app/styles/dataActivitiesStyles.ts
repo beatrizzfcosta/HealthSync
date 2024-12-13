@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
       width: '48%',
       backgroundColor: theme.colorGreyGreen,
       padding: 16,
-      borderRadius: 8,
+      borderRadius: 20,
     },
     icon: {
       marginBottom: 5,
@@ -74,7 +74,33 @@ export const styles = StyleSheet.create({
       marginBottom: 8,
       fontFamily: 'graduate',
     },
-  
+    dropdown: {
+      height: 50,
+      backgroundColor: 'transparent',
+      borderBottomColor: 'gray',
+      borderBottomWidth: 0.5,
+    },
+    placeholderStyle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    selectedTextStyle: {
+      fontSize: 14,
+      color: 'white',
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
+    },
+    selectedStyle: {
+      borderRadius: 19,
+      borderColor: 'transparent',
+      backgroundColor: theme.colorDarkGreen,
+    },
     footer: {
       position: 'absolute',
       bottom: 16,
@@ -85,5 +111,15 @@ export const styles = StyleSheet.create({
       bottom: 20,
       right: 20,
     },
+    activitiesCard:{
+      width: '100%',
+      backgroundColor: theme.colorGreyGreen,
+      padding: 16,
+      borderRadius: 20,
+      marginTop: '10%', margin: '5%'
+    },
+    activiCard:{
+
+    }
   });
   
