@@ -122,7 +122,7 @@ export const styles = StyleSheet.create({
       borderRadius: 5,
     },
     confirmButtonText: {
-      color: theme.colorDarkGreen,
+      color: theme.colorWhite,
       fontWeight: 'bold',
     },
   });

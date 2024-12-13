@@ -75,13 +75,20 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
 
       // Referência ao documento do usuário
       const userRef = firestore().collection('users').doc(user.uid);
-
+      const formattedWeights = [
+        {
+          weight: `${weight}`, // ou Number(weight)
+          date: new Date().toISOString(),
+        },
+      ];
+      console.log('Pesos formatados:', formattedWeights);
+      
       // Adiciona dados adicionais em uma subcoleção
       await userRef.collection('data').add({
         username,
         formatBirthDate,
         height,
-        weight,
+        formattedWeights,
         gender,
         activityLevel,
       });
