@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
       width: '48%',
       backgroundColor: theme.colorGreyGreen,
       padding: 16,
-      borderRadius: 8,
+      borderRadius: 30,
       alignItems: 'center',
     },
     cardText: {

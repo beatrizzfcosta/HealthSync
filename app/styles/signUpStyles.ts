@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     button: {
       backgroundColor: theme.colorDarkGreen,
       paddingVertical: 10,
-      borderRadius: 10,
+      borderRadius: 15,
       marginBottom: 20,
       alignItems: 'center',
       width: 200,
