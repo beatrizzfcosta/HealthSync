@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { theme } from '../assets/theme';
 import { styles } from './styles/homePageStyles';
+import auth from '@react-native-firebase/auth';
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
@@ -30,7 +31,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => auth().signOut()}>
           <FontAwesome
             name="heartbeat"
             size={30}

@@ -26,6 +26,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     try {
       await auth().signInWithEmailAndPassword(mail, password);
       console.log('autenticado');
+      navigation.replace('Home');
     } catch (error) {
       console.error('Erro ao autenticar:', error);
       setErrorMessage('Senha ou email incorretos, tente novamente.');

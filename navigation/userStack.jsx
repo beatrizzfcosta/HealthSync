@@ -59,7 +59,6 @@ const Stack = createStackNavigator();
 
 export default function UserStack() {
   return (
-    <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -71,6 +70,6 @@ export default function UserStack() {
         <Stack.Screen name="Activity" component={ActivityScreen} />
         <Stack.Screen name="WeightIn" component={WeightInScreen} />
       </Stack.Navigator>
-    </NavigationContainer>
+
   );
 }

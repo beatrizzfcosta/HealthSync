@@ -1,29 +1,22 @@
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  TouchableWithoutFeedback,
-  Modal,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, FlatList  } from 'react-native';
 import { theme } from '../assets/theme';
 import * as Progress from 'react-native-progress';
 import WaterSettingsModal from '../components/waterSettings';
 import { styles } from './styles/dataWaterStyles';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+
 export default function WaterDataScreen({ navigation }: { navigation: any }) {
-  const [dailyGoal, setDailyGoal] = useState('2000');
-  const [units, setUnits] = useState('');
+  const [dailyGoal, setDailyGoal] = useState(2000);
   const [selectedAmount, setSelectedAmount] = useState(250);
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
     null
   );
-  const currentProgress = 250 / parseInt(dailyGoal);
+  const [currentProgress,setCurrentProgress] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const flatListRef = React.useRef<FlatList<any>>(null);
   const amounts = [150, 250, 350, 500, 750, 1000];
@@ -31,6 +24,87 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
   const initialIndex = amounts.indexOf(selectedAmount);
   const initialOffset = initialIndex * itemWidth - itemWidth / 4; // Ajusta para centralizar com paddingHorizontal
 
+  const fetchWeights = async () => {
+    try {
+      console.log('entrei no fetch user')
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
+
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+      const dataCollection = await userRef.collection('data').get();
+      if (!dataCollection.empty) {
+        const userInfo = dataCollection.docs[0].data();
+        console.log('dataCollection Existe')
+        if (userInfo.waterInfo && userInfo.waterInfo.length > 0) {
+          const sortedWaterInfo = userInfo.waterInfo.sort(
+            (a: { date: string | number | Date }, b: { date: string | number | Date }) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+          );
+
+          const latestWaterInfo = sortedWaterInfo[0];
+          const [water] = latestWaterInfo.water
+            .toString()
+
+          setCurrentProgress(water);
+          console.log('Progresso diário:', { water});
+          setDailyGoal(userInfo.waterInfo.dailyGoal)
+          console.log('DailyGoal:',{dailyGoal})
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao buscar os dados do usuário:', error);
+    }
+  };
+
+  const addWaterAmount = async () => {
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
+  
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+  
+      // Busca os dados atuais do utilizador
+      const userDoc = await userRef.collection('data').get();
+      if (!userDoc.empty) {
+        const userInfo = userDoc.docs[0];
+        const waterInfo = userInfo.data().waterInfo || [];
+        const parsedCurrentProgress = Number(currentProgress) || 0; // Converte para número
+        const parsedSelectedAmount = Number(selectedAmount) || 0; // Converte para número
+        const newProgress = parsedCurrentProgress + parsedSelectedAmount;
+        console.log(newProgress);
+        // Atualiza os dados no Firestore
+        await userRef
+          .collection('data')
+          .doc(userInfo.id) // Usa o ID do documento específico
+          .update({
+            waterInfo: [
+              ...waterInfo,
+              {
+                date: new Date().toISOString(),
+                water: newProgress,
+              },
+            ],
+          });
+  
+        // Atualiza o estado local
+        setCurrentProgress(newProgress);
+        console.log('Água adicionada com sucesso:', selectedAmount, 'ml');
+      } else {
+        console.error('Não foi possível encontrar dados do utilizador');
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar a quantidade de água:', error);
+    }
+  };
+  
+
+  useEffect(() => {
+      console.log('entrei no useEffect')
+      fetchWeights();
+    }, []);
+    
   const handleSaveSettings = () => {
     // Lógica para salvar as configurações
     setIsModalVisible(false); // Fecha o modal ao salvar
@@ -140,7 +214,7 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
           <TouchableOpacity style={styles.resetButton}>
             <FontAwesome5 name="redo" size={15} color={theme.colorDarkGreen} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity style={styles.addButton}  onPress={addWaterAmount}>
             <FontAwesome name="plus" size={25} color={theme.colorLightGreen} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.completButton}>

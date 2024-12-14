@@ -16,16 +16,18 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
 
   const fetchWeights = async () => {
     try {
+      console.log('entrei no fetch user')
       const user = auth().currentUser;
       if (!user) throw new Error('Utilizador não autenticado');
 
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
-      const dataCollection = await userRef.collection('data').doc('weights').get();
-
-      if (dataCollection.exists) {
-        const userInfo = dataCollection.data() || { formattedWeights: [] };
-
+      const dataCollection = await userRef.collection('data').get();
+      console.log(dataCollection.docs[0].data())
+      if (!dataCollection.empty) {
+        const userInfo = dataCollection.docs[0].data();
+       // const userInfo = dataCollection.data() || { formattedWeights: [] };
+        console.log('dataCollection Existe')
         if (userInfo.formattedWeights && userInfo.formattedWeights.length > 0) {
           const sortedWeights = userInfo.formattedWeights.sort(
             (a: { date: string | number | Date }, b: { date: string | number | Date }) =>
@@ -85,6 +87,7 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
   };
 
   useEffect(() => {
+    console.log('entrei no useEffect')
     fetchWeights();
   }, []);
 

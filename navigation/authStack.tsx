@@ -10,7 +10,6 @@ const Stack = createStackNavigator();
 
 export default function AuthStack() {
   return (
-    <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
           cardStyle: {
@@ -23,6 +22,5 @@ export default function AuthStack() {
         <Stack.Screen name="Sign In" component={SignInScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
       </Stack.Navigator>
-    </NavigationContainer>
   );
 }

@@ -20,6 +20,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import DatePicker from 'react-native-date-picker';
 import { formatDate } from '../components/formatDate'; // Ajuste o caminho conforme necessário
 import { styles } from './styles/signUpStyles';
+import { calculateWaterGoal } from '../utils/waterQuantity'
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -83,6 +84,22 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
       ];
       console.log('Pesos formatados:', formattedWeights);
       
+      const stepsInfo = [
+        {
+          steps: 0,
+          date: new Date().toISOString(),
+          dailyGoal: 10000
+        }
+      ]
+
+      const waterInfo = [
+        {
+          water: 0,
+          date: new Date().toISOString(),
+          dailyGoal: calculateWaterGoal(birthDate, parseFloat(weight)),
+        }
+      ]
+
       // Adiciona dados adicionais em uma subcoleção
       await userRef.collection('data').add({
         username,
@@ -91,6 +108,8 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         formattedWeights,
         gender,
         activityLevel,
+        stepsInfo,
+        waterInfo
       });
 
       // Adicção das Refeições defaults para o utilizador

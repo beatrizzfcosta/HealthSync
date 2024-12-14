@@ -1,20 +1,19 @@
-export const calculateWaterIntake = (age: number, weight: number): number => {
-    if (age <= 0 || weight <= 0) {
-      throw new Error("Idade e peso devem ser maiores que zero.");
-    }
-  
-    let mlPerKg: number;
-  
-    if (age <= 17) {
-      mlPerKg = 40;
-    } else if (age <= 55) {
-      mlPerKg = 35;
-    } else if (age <= 65) {
-      mlPerKg = 30;
-    } else {
-      mlPerKg = 25;
-    }
-  
-    return weight * mlPerKg; // Retorna o total em ml
-  };
-  
+export const calculateWaterGoal = (birthDate: Date, weight: number): number => {
+  const today = new Date();
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const weightInKg = parseFloat(weight.toString());
+
+  let waterPerKg = 0;
+
+  if (age <= 17) {
+    waterPerKg = 40;
+  } else if (age >= 18 && age <= 55) {
+    waterPerKg = 35;
+  } else if (age > 55 && age <= 65) {
+    waterPerKg = 30;
+  } else if (age > 65) {
+    waterPerKg = 25;
+  }
+
+  return weightInKg * waterPerKg; // Resultado em ml
+};
