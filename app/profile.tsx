@@ -3,7 +3,19 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 
 // Components
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Modal, Alert, Image, Button, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  Modal,
+  Alert,
+  Image,
+  Button,
+  TextInput,
+} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -17,6 +29,8 @@ import firestore from '@react-native-firebase/firestore';
 import { styles } from './styles/profileStyles';
 import { Platform } from 'react-native';
 import { theme } from '../assets/theme';
+
+import * as Font from 'expo-font';
 
 export default function Perfil({ navigation }: { navigation: any }) {
   // Estados para definir quais campos estão em modo de edição
@@ -41,29 +55,40 @@ export default function Perfil({ navigation }: { navigation: any }) {
 
   const [fontLoaded, setFontLoaded] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
-  const [userProfilePicture, setUserProfilePicture] = useState<string | null> ( null );
+  const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
+    null
+  );
 
   const [isFitnessLevelFocus, setIsFitnessLevelFocus] = useState(false);
 
   // Níveis de atividade disponíveis
   const activityLevels = [
-    { label: 'Sedentário',                      value: 'sedentary' },
-    { label: 'Levemente Ativo: 1-2/semana',     value: 'lightly_active' },
+    { label: 'Sedentário', value: 'sedentary' },
+    { label: 'Levemente Ativo: 1-2/semana', value: 'lightly_active' },
     { label: 'Moderadamente Ativo: 3-4/semana', value: 'moderately_active' },
-    { label: 'Muito Ativo: 5-6/semana',         value: 'very_active' },
-    { label: 'Extremamente Ativo: 6-7/semana',  value: 'extremely_active' },
+    { label: 'Muito Ativo: 5-6/semana', value: 'very_active' },
+    { label: 'Extremamente Ativo: 6-7/semana', value: 'extremely_active' },
   ];
 
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  console.log("22222222222222222222");
+  // Font loader
+  useEffect(() => {
+    Font.loadAsync({
+      Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
+    })
+      .then(() => setFontLoaded(true))
+      .catch((error) => console.error('Error loading fonts:', error));
+  }, []);
+
+  console.log('22222222222222222222');
 
   // Function to get user data from database
   const fetchUserData = async () => {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('User not authenticated');
-      
+
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
       const dataCollection = await userRef.collection('data').get();
@@ -74,22 +99,25 @@ export default function Perfil({ navigation }: { navigation: any }) {
 
         // If userInfo then set all the data on the appropriate fields
         if (userInfo) {
-
-          setName          (userInfo.username                || '');
-          setEmail         (user.email                       || '');
-          setHeight        (userInfo.height                  || '');
+          setName(userInfo.username || '');
+          setEmail(user.email || '');
+          setHeight(userInfo.height || '');
           setStartingWeight(userInfo.formattedWeights.weight || '');
-          setTargetWeight  (userInfo.targetWeight.weight     || '');
-          setPhotoUrl      (userInfo.profilePhotoUrl         || null);
-          setFitnessLevel  (userInfo.activityLevel           || '');
+          setTargetWeight(userInfo.targetWeight.weight || '');
+          setPhotoUrl(userInfo.profilePhotoUrl || null);
+          setFitnessLevel(userInfo.activityLevel || '');
 
-          if (userInfo.formatBirthDate && userInfo.formatBirthDate.includes('/')) {
-            const [day, month, year] = userInfo.formatBirthDate.split('/').map(Number);
+          if (
+            userInfo.formatBirthDate &&
+            userInfo.formatBirthDate.includes('/')
+          ) {
+            const [day, month, year] = userInfo.formatBirthDate
+              .split('/')
+              .map(Number);
             setBirthDate(new Date(year, month - 1, day));
           } else {
             setBirthDate(new Date());
           }
-
         }
       } else {
         console.warn("No document found for user's data collection object");
@@ -98,7 +126,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
       console.error('Error fething user data:', error);
     }
   };
-  
+
   // useEffect para buscar os dados quando o componente for montado
   useEffect(() => {
     fetchUserData();
@@ -176,7 +204,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
       ]
     );
   };*/
-  
 
   /* Função para voltar à página inicial com confirmação
   const handleHomePage = () => {
@@ -240,35 +267,32 @@ export default function Perfil({ navigation }: { navigation: any }) {
           style: 'cancel',
         },
         {
-          text: "Yes",
+          text: 'Yes',
           onPress: () => navigation.navigate('Home'),
-        }
-        ])
-  } 
+        },
+      ]
+    );
+  }
 
   function handleSignOut() {
-    Alert.alert(
-      'End Session',
-      'Do you really wish to end your session?',
-      [
-        {
-          text: 'No',
-          onPress: () => console.log('Atualização cancelada'),
-          style: 'cancel',
-        },
-        {
-          text: "Yes",
-          onPress: async () => 
-          {
-            try {
-              await auth().signOut();
-              navigation.navigate('Sign In');
-            } catch (error) {
-              console.error('Error loging out the user:', error);
-            }
+    Alert.alert('End Session', 'Do you really wish to end your session?', [
+      {
+        text: 'No',
+        onPress: () => console.log('Atualização cancelada'),
+        style: 'cancel',
+      },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          try {
+            await auth().signOut();
+            navigation.navigate('Sign In');
+          } catch (error) {
+            console.error('Error loging out the user:', error);
           }
-        }
-      ])
+        },
+      },
+    ]);
   }
 
   return (
@@ -311,66 +335,59 @@ export default function Perfil({ navigation }: { navigation: any }) {
         <View style={styles.inputsInsideContainer}>
           <View style={styles.inputContainer}>
             <TextInput
-            value={name}
-            placeholder={`Name`}
-            onChangeText={setName}
-            />
-          </View>
-          
-          <View style={styles.inputContainer}>
-            <TextInput
-            value={birthDate.toISOString().split('T')[0]}
-            placeholder={`Birth Date`}
-            editable={false}
-            />
-          </View>
-          
-          <View style={styles.inputContainer}>
-            <TextInput
-            value={height}
-            placeholder={`Height`}
+              value={name}
+              placeholder={`Name`}
+              onChangeText={setName}
             />
           </View>
 
           <View style={styles.inputContainer}>
             <TextInput
-            value={startingWeight}
-            placeholder={`Starting weight`}
+              value={birthDate.toISOString().split('T')[0]}
+              placeholder={`Birth Date`}
+              editable={false}
             />
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-            value={targetWeight}
-            placeholder={`Target weight`}
-            />
+            <TextInput value={height} placeholder={`Height`} />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput value={startingWeight} placeholder={`Starting weight`} />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput value={targetWeight} placeholder={`Target weight`} />
           </View>
 
           <View style={styles.inputContainer}>
             <Dropdown
-            //style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-            data={activityLevels}
-            labelField="label"
-            valueField="value"
-            placeholder={!isFitnessLevelFocus ? 'Select Fitness Level' : '...'}
-            value={fitnessLevel}
-            onFocus={() => setIsFitnessLevelFocus(true)}
-            onBlur={() => setIsFitnessLevelFocus(false)}
-            onChange={(item: any) => {
-              setFitnessLevel(item.value);
-              setIsFitnessLevelFocus(false);
-            }}
+              //style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+              data={activityLevels}
+              labelField="label"
+              valueField="value"
+              placeholder={
+                !isFitnessLevelFocus ? 'Select Fitness Level' : '...'
+              }
+              value={fitnessLevel}
+              onFocus={() => setIsFitnessLevelFocus(true)}
+              onBlur={() => setIsFitnessLevelFocus(false)}
+              onChange={(item: any) => {
+                setFitnessLevel(item.value);
+                setIsFitnessLevelFocus(false);
+              }}
             />
           </View>
         </View>
       </View>
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress = { handleDataSaveAndExit }>
+        <TouchableOpacity style={styles.button} onPress={handleDataSaveAndExit}>
           <Text style={styles.buttonText}>Save & Leave</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={ handleSignOut }>
+        <TouchableOpacity style={styles.button} onPress={handleSignOut}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
