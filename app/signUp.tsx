@@ -63,6 +63,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     try {
       const auth = getAuth();
       console.log(auth);
+      console.log("Email:" , email);
       // Cria o usuário com e-mail e senha
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -100,10 +101,17 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         }
       ]
 
+      const targetWeight = [
+        {
+          weight: `${weight}`,
+        }
+      ] 
+
       // Adiciona dados adicionais em uma subcoleção
       await userRef.collection('data').add({
         username,
         formatBirthDate,
+        targetWeight,
         height,
         formattedWeights,
         gender,

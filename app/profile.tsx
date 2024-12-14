@@ -42,8 +42,10 @@ export default function Perfil({ navigation }: { navigation: any }) {
   const [fitnessLevel, setFitnessLevel] = useState('');
 
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState('');
+  const [photoUrl, setPhotoUrl] = useState(null);
   const [userProfilePicture, setUserProfilePicture] = useState<string | null> ( null );
+
+  const [isFitnessLevelFocus, setIsFitnessLevelFocus] = useState(false);
 
   // Níveis de atividade disponíveis
   const activityLevels = [
@@ -60,22 +62,23 @@ export default function Perfil({ navigation }: { navigation: any }) {
   useEffect(() => {
     Font.loadAsync({
       Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
-    }).then(() => setFontLoaded(true));
+    })
+      .then(() => setFontLoaded(true))
+      .catch((error) => console.error('Error loading fonts:', error));
   }, []);
-  if (!fontLoaded) {
-    return null;
-  }
+
+  console.log("22222222222222222222");
 
   // Function to get user data from database
   const fetchUserData = async () => {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('User not authenticated');
-  
+      
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
       const dataCollection = await userRef.collection('data').get();
-  
+
       // Check if user's data obj is empty
       if (!dataCollection.empty) {
         const userInfo = dataCollection.docs[0].data();
@@ -83,13 +86,13 @@ export default function Perfil({ navigation }: { navigation: any }) {
         // If userInfo then set all the data on the appropriate fields
         if (userInfo) {
 
-          setName(userInfo.username || '');
-          setEmail(userInfo.email  || '');
-          setHeight(userInfo.height || '');
-          setStartingWeight(userInfo.weight || '');
-          setTargetWeight(userInfo.targetWeight || '');
-          setPhotoUrl(userInfo.profilePhotoUrl || '');
-          setFitnessLevel(userInfo.activityLevel || '');
+          setName          (userInfo.username                || '');
+          setEmail         (user.email                       || '');
+          setHeight        (userInfo.height                  || '');
+          setStartingWeight(userInfo.formattedWeights.weight || '');
+          setTargetWeight  (userInfo.targetWeight.weight     || '');
+          setPhotoUrl      (userInfo.profilePhotoUrl         || null);
+          setFitnessLevel  (userInfo.activityLevel           || '');
 
           if (userInfo.formatBirthDate && userInfo.formatBirthDate.includes('/')) {
             const [day, month, year] = userInfo.formatBirthDate.split('/').map(Number);
@@ -107,6 +110,11 @@ export default function Perfil({ navigation }: { navigation: any }) {
     }
   };
   
+  // useEffect para buscar os dados quando o componente for montado
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   /* Função para salvar as atualizações do perfil do usuário
   const handleSave = async () => {
     Alert.alert(
@@ -129,7 +137,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
               const userRef = firestore().collection('users').doc(userId);
           
               // Obtendo a subcoleção 'data'
-              const dataCollection = await userRef.collection('data').get();
+             const dataCollection = await userRef.collection('data').get();
           
               if (!dataCollection.empty) {
                 // Atualiza o primeiro documento encontrado na subcoleção 'data'
@@ -180,21 +188,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
     );
   };*/
   
-  // useEffect para buscar os dados quando o componente for montado
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  // Função para confirmar a data de nascimento
-  const handleConfirm = () => {
-    // Verifica se a data está corretamente definida e atualiza o estado
-    if (birthDate) {
-      setShowDatePicker(false); // Fecha o modal
-      console.log('Data de nascimento selecionada:', birthDate);
-    } else {
-      console.warn('Nenhuma data de nascimento selecionada');
-    }
-  };
 
   /* Função para voltar à página inicial com confirmação
   const handleHomePage = () => {
@@ -214,7 +207,8 @@ export default function Perfil({ navigation }: { navigation: any }) {
         ])
   };*/
 
-  /* Função para adicionar foto de perfil
+  // Função para adicionar foto de perfil
+  /*
   const handleAddProfilePhoto = async () => {
     try {
       if (Platform.OS === 'android') {
@@ -330,6 +324,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
             <TextInput
             value={name}
             placeholder={`Name`}
+            onChangeText={setName}
             />
           </View>
           
@@ -337,6 +332,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
             <TextInput
             value={birthDate.toISOString().split('T')[0]}
             placeholder={`Birth Date`}
+            editable={false}
             />
           </View>
           
@@ -351,7 +347,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
             <TextInput
             value={startingWeight}
             placeholder={`Starting weight`}
-            editable={false}
             />
           </View>
 
@@ -363,9 +358,19 @@ export default function Perfil({ navigation }: { navigation: any }) {
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
+            <Dropdown
+            //style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            data={activityLevels}
+            labelField="label"
+            valueField="value"
+            placeholder={!isFitnessLevelFocus ? 'Select Fitness Level' : '...'}
             value={fitnessLevel}
-            placeholder={`Fitness level`}
+            onFocus={() => setIsFitnessLevelFocus(true)}
+            onBlur={() => setIsFitnessLevelFocus(false)}
+            onChange={(item: any) => {
+              setFitnessLevel(item.value);
+              setIsFitnessLevelFocus(false);
+            }}
             />
           </View>
         </View>
