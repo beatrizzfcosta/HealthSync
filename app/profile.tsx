@@ -1,105 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  ScrollView,
-  Modal,
-  Alert,
-  Image,
-  Button,
-} from 'react-native';
+// React
+import React from 'react';
+import { useEffect, useState } from 'react';
+
+// Components
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Modal, Alert, Image, Button, TextInput } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
-import { styles } from './styles/profileStyles';
 import DatePicker from 'react-native-date-picker';
+
+// Database
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+// Internals
+import { styles } from './styles/profileStyles';
 import { Platform } from 'react-native';
 import { theme } from '../assets/theme';
+
 import * as Font from 'expo-font';
-import auth from '@react-native-firebase/auth';
 
 export default function Perfil({ navigation }: { navigation: any }) {
   // Estados para definir quais campos estão em modo de edição
   const [isEditing, setIsEditing] = useState({
-    username: false,
-    gender: false,
+    name: false,
+    email: false,
     birthDate: false,
     height: false,
-    weight: false,
-    activityLevel: false,
+    startingWeight: false,
+    targetWeight: false,
+    fitnessLevel: false,
   });
 
   // Estados para armazenar dados do usuário
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [birthDate, setBirthDate] = useState<Date>(new Date());
   const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
-  const [photoUrl, setPhotoUrl] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [gender, setGender] = useState<string>('');
+  const [startingWeight, setStartingWeight] = useState('');
+  const [targetWeight, setTargetWeight] = useState('');
+  const [fitnessLevel, setFitnessLevel] = useState('');
+
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
-    null
-  );
-
-  // Opções de gênero disponíveis
-  const genders = [
-    { label: 'Masculino', value: 'masculino' },
-    { label: 'Feminino', value: 'feminino' },
-    { label: 'Outro', value: 'outro' },
-  ];
-
-  const [activityLevel, setActivityLevel] = useState<string>('');
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [userProfilePicture, setUserProfilePicture] = useState<string | null> ( null );
 
   // Níveis de atividade disponíveis
   const activityLevels = [
-    { label: 'Sedentário', value: 'sedentary' },
-    { label: 'Levemente Ativo: 1-2/semana', value: 'lightly_active' },
+    { label: 'Sedentário',                      value: 'sedentary' },
+    { label: 'Levemente Ativo: 1-2/semana',     value: 'lightly_active' },
     { label: 'Moderadamente Ativo: 3-4/semana', value: 'moderately_active' },
-    { label: 'Muito Ativo: 5-6/semana', value: 'very_active' },
-    { label: 'Extremamente Ativo: 6-7/semana', value: 'extremely_active' },
+    { label: 'Muito Ativo: 5-6/semana',         value: 'very_active' },
+    { label: 'Extremamente Ativo: 6-7/semana',  value: 'extremely_active' },
   ];
 
-  const [dri, setDri] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  // Font loader
   useEffect(() => {
     Font.loadAsync({
       Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
     }).then(() => setFontLoaded(true));
   }, []);
   if (!fontLoaded) {
-    return null; // Ou um indicador de carregamento
+    return null;
   }
 
-  /* Função para buscar dados do usuário no Firestore
+  // Function to get user data from database
   const fetchUserData = async () => {
-    console.log('useEffect executado - buscando dados do usuário');
     try {
       const user = auth().currentUser;
-      if (!user) throw new Error('Utilizador não autenticado');
+      if (!user) throw new Error('User not authenticated');
   
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
-  
-      // Obtém a subcoleção 'data' do usuário
       const dataCollection = await userRef.collection('data').get();
   
-      // Verifica se há documentos na subcoleção 'data'
+      // Check if user's data obj is empty
       if (!dataCollection.empty) {
         const userInfo = dataCollection.docs[0].data();
-        console.log('Dados do usuário:', userInfo);
-  
+
+        // If userInfo then set all the data on the appropriate fields
         if (userInfo) {
-           // Define os dados no estado com os valores recuperados
-          setUsername(userInfo.username || '');
-          setGender(userInfo.gender || '');
-          // Verifica se a data de nascimento está formatada e define `birthDate`
+
+          setName(userInfo.username || '');
+          setEmail(userInfo.email  || '');
+          setHeight(userInfo.height || '');
+          setStartingWeight(userInfo.weight || '');
+          setTargetWeight(userInfo.targetWeight || '');
+          setPhotoUrl(userInfo.profilePhotoUrl || '');
+          setFitnessLevel(userInfo.activityLevel || '');
+
           if (userInfo.formatBirthDate && userInfo.formatBirthDate.includes('/')) {
             const [day, month, year] = userInfo.formatBirthDate.split('/').map(Number);
             setBirthDate(new Date(year, month - 1, day));
@@ -107,20 +98,15 @@ export default function Perfil({ navigation }: { navigation: any }) {
             setBirthDate(new Date());
           }
 
-          setHeight(userInfo.height?.toString() || '');
-          setWeight(userInfo.weight?.toString() || '');
-          setActivityLevel(userInfo.activityLevel || '');
-          setPhotoUrl(userInfo.profilePhotoUrl || '');
-  
         }
       } else {
-        console.warn('Nenhum documento encontrado na subcoleção "data" do usuário');
+        console.warn("No document found for user's data collection object");
       }
     } catch (error) {
-      console.error('Erro ao buscar os dados do usuário:', error);
+      console.error('Error fething user data:', error);
     }
   };
-  */
+  
   /* Função para salvar as atualizações do perfil do usuário
   const handleSave = async () => {
     Alert.alert(
@@ -192,13 +178,13 @@ export default function Perfil({ navigation }: { navigation: any }) {
         },
       ]
     );
-  };
+  };*/
   
   // useEffect para buscar os dados quando o componente for montado
   useEffect(() => {
     fetchUserData();
   }, []);
-*/
+
   // Função para confirmar a data de nascimento
   const handleConfirm = () => {
     // Verifica se a data está corretamente definida e atualiza o estado
@@ -259,41 +245,48 @@ export default function Perfil({ navigation }: { navigation: any }) {
     } catch (error) {
       console.error('Erro ao selecionar a foto de perfil:', error);
     }
-  };
+  };*/
 
-*/
-  /*Função para deslogar o usuário com confirmação
-  const handleLogOut = () => {
-
+  function handleDataSaveAndExit() {
     Alert.alert(
-      'Terminar Sessão',
-      'Deseja mesmo terminar sessão?',
+      'Saving and exit',
+      'Do you really wish to save and return to home screen?',
       [
         {
-          text: 'Não',
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: "Yes",
+          onPress: () => navigation.navigate('Home'),
+        }
+        ])
+  } 
+
+  function handleSignOut() {
+    Alert.alert(
+      'End Session',
+      'Do you really wish to end your session?',
+      [
+        {
+          text: 'No',
           onPress: () => console.log('Atualização cancelada'),
           style: 'cancel',
         },
         {
-          text: "sim",
+          text: "Yes",
           onPress: async () => 
           {
             try {
               await auth().signOut();
-              console.log('Usuário deslogado com sucesso');
-              //navigation.navigate('index');
+              navigation.navigate('Sign In');
             } catch (error) {
-              console.error('Erro ao deslogar o usuário:', error);
+              console.error('Error loging out the user:', error);
             }
           }
         }
-        ])
-  };
-*/
-  // Função para alternar o estado de edição de um campo específico
-  const handleEditToggle = (field: keyof typeof isEditing) => {
-    setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
+      ])
+  }
 
   return (
     <View style={styles.container}>
@@ -333,24 +326,57 @@ export default function Perfil({ navigation }: { navigation: any }) {
         </Text>
 
         <View style={styles.inputsInsideContainer}>
-          <View style={styles.inputContainer}></View>
-          <View style={styles.inputContainer}></View>
-          <View style={styles.inputContainer}></View>
-          <View style={styles.inputContainer}></View>
-          <View style={styles.inputContainer}></View>
-          <View style={styles.inputContainer}></View>
+          <View style={styles.inputContainer}>
+            <TextInput
+            value={name}
+            placeholder={`Name`}
+            />
+          </View>
+          
+          <View style={styles.inputContainer}>
+            <TextInput
+            value={birthDate.toISOString().split('T')[0]}
+            placeholder={`Birth Date`}
+            />
+          </View>
+          
+          <View style={styles.inputContainer}>
+            <TextInput
+            value={height}
+            placeholder={`Height`}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+            value={startingWeight}
+            placeholder={`Starting weight`}
+            editable={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+            value={targetWeight}
+            placeholder={`Target weight`}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+            value={fitnessLevel}
+            placeholder={`Fitness level`}
+            />
+          </View>
         </View>
       </View>
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Guardar</Text>
+        <TouchableOpacity style={styles.button} onPress = { handleDataSaveAndExit }>
+          <Text style={styles.buttonText}>Save & Leave</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => auth().signOut()}
-        >
+        <TouchableOpacity style={styles.button} onPress={ handleSignOut }>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
