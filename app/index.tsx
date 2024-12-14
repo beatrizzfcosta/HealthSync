@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
-//import notifee, { AndroidImportance } from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import RootNavigation from '../navigation/index';
 import * as Font from 'expo-font';
 import {
@@ -9,14 +9,14 @@ import {
   FIREBASE_DB,
   FIREBASE_REALTIME_DB,
 } from '../config/healthsyncConfig';
-// async function setupNotificationChannel() {
-//   await notifee.createChannel({
-//     id: 'Reminder',
-//     name: 'Medication Reminders',
-//     importance: AndroidImportance.HIGH,
-//     sound: 'alarm',
-//   });
-// }
+async function setupNotificationChannel() {
+  await notifee.createChannel({
+    id: 'Reminder',
+    name: 'Alarm Reminders',
+    importance: AndroidImportance.HIGH,
+    sound: 'alarm',
+  });
+}
 
 export default function Index() {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -41,9 +41,9 @@ export default function Index() {
     return null; // Ou um indicador de carregamento
   }
 
-  // useEffect(() => {
-  //   setupNotificationChannel();
-  // }, []);
+  useEffect(() => {
+    setupNotificationChannel();
+  }, []);
 
   return (
     //Abrir a RootNavigation para verificar se o utilizador está ativo
