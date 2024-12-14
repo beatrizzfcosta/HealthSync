@@ -22,9 +22,7 @@ export default function Index({ navigation }: { navigation: any }) {
       Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
     }).then(() => setFontLoaded(true));
   }, []);
-  if (!fontLoaded) {
-    return null; // Ou um indicador de carregamento
-  }
+  
 
   return (
     <View style={styles.container}>

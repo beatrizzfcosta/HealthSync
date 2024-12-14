@@ -36,21 +36,21 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
       if (!dataCollection.empty) {
         const userInfo = dataCollection.docs[0].data();
         console.log('dataCollection Existe')
+        console.log('userInfo:', userInfo);
         if (userInfo.waterInfo && userInfo.waterInfo.length > 0) {
           const sortedWaterInfo = userInfo.waterInfo.sort(
             (a: { date: string | number | Date }, b: { date: string | number | Date }) =>
               new Date(b.date).getTime() - new Date(a.date).getTime()
           );
-
-          const latestWaterInfo = sortedWaterInfo[0];
-          const [water] = latestWaterInfo.water
-            .toString()
-
-          setCurrentProgress(water);
-          console.log('Progresso diário:', { water});
-          setDailyGoal(userInfo.waterInfo.dailyGoal)
-          console.log('DailyGoal:',{dailyGoal})
+        
+          const latestWaterInfo = sortedWaterInfo[0]; // Obtem o objeto mais recente
+          const water = latestWaterInfo.water; // Corrigido para acessar "water"
+          const dailyGoal = sortedWaterInfo[0]?.dailyGoal || 0;// Corrigido para acessar "dailyGoal"
+          console.log('latestWaterInfo',{latestWaterInfo})
+          console.log('Progresso diário:', { water });
+          console.log('Meta diária:', { dailyGoal });
         }
+        
       }
     } catch (error) {
       console.error('Erro ao buscar os dados do usuário:', error);
@@ -70,6 +70,9 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
       if (!userDoc.empty) {
         const userInfo = userDoc.docs[0];
         const waterInfo = userInfo.data().waterInfo || [];
+
+        const dailyGoal = waterInfo[0]?.dailyGoal || 0;
+        const currentDate = new Date().toISOString().split('T')[0];
         const parsedCurrentProgress = Number(currentProgress) || 0; // Converte para número
         const parsedSelectedAmount = Number(selectedAmount) || 0; // Converte para número
         const newProgress = parsedCurrentProgress + parsedSelectedAmount;
@@ -82,8 +85,9 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
             waterInfo: [
               ...waterInfo,
               {
-                date: new Date().toISOString(),
+                date: currentDate,
                 water: newProgress,
+                dailyGoal: dailyGoal, 
               },
             ],
           });
@@ -93,7 +97,7 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
         console.log('Água adicionada com sucesso:', selectedAmount, 'ml');
       } else {
         console.error('Não foi possível encontrar dados do utilizador');
-      }
+      } 
     } catch (error) {
       console.error('Erro ao adicionar a quantidade de água:', error);
     }
@@ -152,7 +156,7 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
       <View style={styles.mainContent}>
         <View style={styles.containerProgress}>
           <Progress.Circle
-            progress={currentProgress}
+            progress={currentProgress/dailyGoal}
             size={180}
             color={'#054F77'}
             borderWidth={2}
