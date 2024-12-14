@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { theme } from '../../assets/theme';
  
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     scrollContainer: {
       alignItems: 'center',
       backgroundColor: '#fff',
@@ -126,3 +126,5 @@ export const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
   });
+
+export default styles;

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { theme } from '../../assets/theme';
  
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'center',
@@ -67,3 +67,5 @@ export const styles = StyleSheet.create({
       padding: 10,
     },
   });
+
+export default styles;

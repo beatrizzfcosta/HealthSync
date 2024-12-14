@@ -65,9 +65,19 @@ export const styles = StyleSheet.create({
   },
   viewMore: {
     fontSize: 12,
-    color: '#344E41',
+    color: theme.colorDarkGreen,
     fontWeight: 'bold',
     fontFamily: 'graduate',
+  },
+  editAlerts: {
+    fontSize: 12,
+    color: theme.colorDarkGreen,
+    fontWeight: 'bold',
+    fontFamily: 'graduate',
+    borderWidth: 2,
+    borderColor: theme.colorDarkGreen,
+    padding: 2,
+    borderRadius:10
   },
   highlightsContainer: {
     flexDirection: 'row',
