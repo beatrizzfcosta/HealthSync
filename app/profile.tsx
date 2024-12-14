@@ -18,8 +18,6 @@ import { styles } from './styles/profileStyles';
 import { Platform } from 'react-native';
 import { theme } from '../assets/theme';
 
-import * as Font from 'expo-font';
-
 export default function Perfil({ navigation }: { navigation: any }) {
   // Estados para definir quais campos estão em modo de edição
   const [isEditing, setIsEditing] = useState({
@@ -57,15 +55,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
   ];
 
   const [showDatePicker, setShowDatePicker] = useState(false);
-
-  // Font loader
-  useEffect(() => {
-    Font.loadAsync({
-      Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
-    })
-      .then(() => setFontLoaded(true))
-      .catch((error) => console.error('Error loading fonts:', error));
-  }, []);
 
   console.log("22222222222222222222");
 
