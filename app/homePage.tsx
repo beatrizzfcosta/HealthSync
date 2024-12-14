@@ -60,8 +60,11 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
       <Text style={styles.currentDate}>{currentDate}</Text>
       {/* Alerts Section */}
       <View style={styles.highlightsHeader}>
-      <Text style={styles.sectionTitle}>ALERTS</Text>
-      <TouchableOpacity style={styles.editAlerts} onPress={() => navigation.navigate('AlertSettings')}>
+        <Text style={styles.sectionTitle}>ALERTS</Text>
+        <TouchableOpacity
+          style={styles.editAlerts}
+          onPress={() => navigation.navigate('AlertSettings')}
+        >
           <Text style={styles.viewMore}>Edit Alerts</Text>
         </TouchableOpacity>
       </View>

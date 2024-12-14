@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+} from 'react-native';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 import RootNavigation from '../navigation/index';
 import * as Font from 'expo-font';
@@ -9,6 +14,7 @@ import {
   FIREBASE_DB,
   FIREBASE_REALTIME_DB,
 } from '../config/healthsyncConfig';
+
 async function setupNotificationChannel() {
   await notifee.createChannel({
     id: 'Reminder',
@@ -20,30 +26,41 @@ async function setupNotificationChannel() {
 
 export default function Index() {
   const [fontLoaded, setFontLoaded] = useState(false);
-  useEffect(() => {
-    Font.loadAsync({
-      Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
-    }).then(() => setFontLoaded(true));
-  }, []);
-  useEffect(() => {
-    // Testar se o Firebase foi inicializado corretamente
-    console.log('Firebase App:', FIREBASE_APP);
-    console.log('Firebase Auth:', FIREBASE_AUTH);
-    console.log('Firebase Firestore:', FIREBASE_DB);
-    console.log('Firebase Realtime DB:', FIREBASE_REALTIME_DB);
 
-    // Carregar fontes personalizadas
-    Font.loadAsync({
-      Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
-    }).then(() => setFontLoaded(true));
+  useEffect(() => {
+    async function initializeApp() {
+      try {
+        // Testar se o Firebase foi inicializado corretamente
+        console.log('Firebase App:', FIREBASE_APP);
+        console.log('Firebase Auth:', FIREBASE_AUTH);
+        console.log('Firebase Firestore:', FIREBASE_DB);
+        console.log('Firebase Realtime DB:', FIREBASE_REALTIME_DB);
+
+        // Configurar notificações
+        await setupNotificationChannel();
+
+        // Carregar fontes personalizadas
+        await Font.loadAsync({
+          Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
+        });
+
+        setFontLoaded(true);
+      } catch (error) {
+        console.error('Erro ao inicializar o aplicativo:', error);
+      }
+    }
+
+    initializeApp();
   }, []);
+
   if (!fontLoaded) {
-    return null; // Ou um indicador de carregamento
+    // Mostrar um indicador de carregamento enquanto as fontes não carregam
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
-
-  useEffect(() => {
-    setupNotificationChannel();
-  }, []);
 
   return (
     //Abrir a RootNavigation para verificar se o utilizador está ativo
