@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { theme } from '../../assets/theme';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       /* @info Make the containing view fill the screen */
       flex: 1,
@@ -27,3 +27,5 @@ export const styles = StyleSheet.create({
       padding: 20,
     },
   });
+
+export default styles;

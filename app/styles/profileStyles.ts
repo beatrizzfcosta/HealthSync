@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { theme } from '../../assets/theme';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colorLightGreen,
     alignItems: 'center',
@@ -87,3 +87,5 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default styles;
