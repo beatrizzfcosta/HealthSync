@@ -123,6 +123,61 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
     }
   };
   
+  const updateStepsOnFirestore = async (newSteps: number) => {
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
+  
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+  
+      // Busca os dados atuais do Firestore
+      const userDoc = await userRef.collection('data').get();
+      if (!userDoc.empty) {
+        const userInfo = userDoc.docs[0];
+        const stepsInfo = userInfo.data().stepInfo || [];
+  
+        const currentDate = new Date().toISOString().split('T')[0];
+  
+        // Verifica se há uma entrada para hoje
+        const existingEntryIndex = stepsInfo.findIndex(
+          (info: { date: string }) => info.date === currentDate
+        );
+  
+        let updatedStepInfo;
+  
+        if (existingEntryIndex !== -1) {
+          // Soma os novos passos aos passos existentes
+          stepsInfo[existingEntryIndex].steps += newSteps;
+  
+          updatedStepInfo = [...stepsInfo];
+        } else {
+          // Cria uma nova entrada se não existir
+          updatedStepInfo = [
+            ...stepsInfo,
+            { date: currentDate, steps: newSteps, dailyGoal: dailyGoal },
+          ];
+        }
+  
+        // Atualiza no Firestore
+        await userRef.collection('data').doc(userInfo.id).update({
+          stepInfo: updatedStepInfo,
+        });
+  
+        console.log('Passos atualizados para o dia atual:', stepsInfo[existingEntryIndex]?.steps || newSteps);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar os passos no Firestore:', error);
+    }
+  };
+  
+  
+  useEffect(() => {
+    if (steps > 0) {
+      updateStepsOnFirestore(1);
+    }
+  }, [steps]);
+  
   
   const updateDailyGoal = async (newDailyGoal: string | React.SetStateAction<number>) => {
     try {
@@ -205,7 +260,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
             showsText={true}
           />
         </View>
-
+          <Text>{steps}</Text>
         {/* Info Cards */}
         <View style={styles.infoCards}>
           <View style={styles.card}>
