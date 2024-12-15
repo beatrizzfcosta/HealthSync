@@ -267,9 +267,9 @@ export default function Perfil({ navigation }: { navigation: any }) {
         )}
 
         <View style={styles.detailsContainer}>
-          <Text style={styles.secText}>Nome</Text>
+          <Text style={styles.secText}>{name}</Text>
 
-          <Text style={styles.secText}>Email</Text>
+          <Text style={styles.secText}>{email}</Text>
         </View>
       </View>
 
