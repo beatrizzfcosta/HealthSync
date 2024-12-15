@@ -15,6 +15,7 @@ import {
   Image,
   Button,
   TextInput,
+  StatusBar,
 } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
@@ -297,6 +298,12 @@ export default function Perfil({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor={theme.colorDarkGreen}
+        barStyle={'dark-content'}
+        hidden={false}
+      />
       <View style={styles.imageContainer}>
         {userProfilePicture ? (
           <Image

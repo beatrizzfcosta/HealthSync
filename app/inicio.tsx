@@ -7,7 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles/inicioStyles';
 const image = {
-  uri: 'https://cravenutritionalcooking.com/wp-content/uploads/2023/04/filip-mroz-XCkRGOX2VgM-unsplash-1-1024x832.jpg',
+  uri: 'https://images.prismic.io/sportsshoesprod/5aefc0a7-13a0-4682-a878-3315b99f00c2_filip-mroz-XCkRGOX2VgM-unsplash.jpg?auto=compress,format&rect=0,800,4000,4000&w=850&h=850',
 };
 
 export default function Index({ navigation }: { navigation: any }) {
@@ -22,7 +22,6 @@ export default function Index({ navigation }: { navigation: any }) {
       Graduate: require('../assets/fonts/Graduate-Regular.ttf'),
     }).then(() => setFontLoaded(true));
   }, []);
-  
 
   return (
     <View style={styles.container}>

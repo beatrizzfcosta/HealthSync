@@ -101,10 +101,8 @@ export default function LoginPage({ navigation }: { navigation: any }) {
         <Text style={styles.errorMessage}>{errorMessage}</Text>
       ) : null}
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText} onPress={handleHomePage}>
-          Sign In
-        </Text>
+      <TouchableOpacity style={styles.button} onPress={handleHomePage}>
+        <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
       <TouchableOpacity>
