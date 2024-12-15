@@ -11,20 +11,31 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { theme } from '../assets/theme';
 
-interface WaterSettingsModalProps {
+interface stepsSettingsModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (dailyGoal: string, units: string) => void;
+  onSave: (dailyGoal: string) => void;
 }
 
-const StepsSettingsModal = ({
-  visible,
-  onClose,
-  onSave,
-} : WaterSettingsModalProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(7000);
-  const [showNotification, setShowNotification] = useState(false);
-
+  const StepsSettingsModal= ({
+    visible,
+    onClose,
+    onSave
+  }: stepsSettingsModalProps) => {
+    const [newDailyGoal, setNewDailyGoal] = useState('2000');
+    const [showNotification, setShowNotification] = useState(false);
+  
+    const handleSave = () => {
+      const parsedDailyGoal = Number(newDailyGoal);
+      if (!isNaN(parsedDailyGoal) && parsedDailyGoal > 0) {
+        onSave(parsedDailyGoal.toString()); // Chama a função updateDailyGoal passando o novo valor
+        onClose(); // Fecha o modal
+      } else {
+        console.error('Meta diária inválida.');
+      }
+    };
+    
+  
   const amounts = [
     3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500,
     9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000,
@@ -32,10 +43,6 @@ const StepsSettingsModal = ({
     20000,
   ];
 
-  const handleSave = () => {
-    onSave(selectedAmount.toString(), '');
-    onClose(); // Fecha o modal após salvar
-  };
 
   return (
     <Modal
@@ -84,8 +91,8 @@ const StepsSettingsModal = ({
                     label: `${amount} steps`,
                     value: amount,
                   }))}
-                  initialSelectedIndex={amounts.indexOf(selectedAmount)}
-                  onChange={({ item }) => setSelectedAmount(item.value)}
+                  initialSelectedIndex={amounts.indexOf(Number(newDailyGoal))}
+                  onChange={({ item }) => setNewDailyGoal(item.value)}
                   renderItem={(props) => (
                     <Text
                       style={[

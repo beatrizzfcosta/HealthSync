@@ -12,6 +12,8 @@ import StepsSettingsModal from '../components/stepsSettings';
 import { styles } from './styles/dataStepsStyles';
 import { Accelerometer } from 'expo-sensors';
 import { Constants } from 'expo-constants';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 
 export default function StepsScreen({ navigation }: { navigation: any }) {
@@ -28,6 +30,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
   const [userHeight, setUserHeight] = useState(170); // Altura do usuário (em cm)
   const [userGender, setUserGender] = useState('male'); // Gênero do usuário ('male' ou 'female')
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentProgress,setCurrentProgress] = useState(0);
 
   useEffect(() => {
     let subscription: { remove: any; };
@@ -77,20 +80,91 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
     }
   }, [isCounting, lastY, lastTimestamp])
 
-  const resetSteps = () => {
-    setSteps(0);
-    setCalories(0);
-    setDistance(0);
-  }
-
-  const handleSaveSettings = (goal: string, units: string) => {
-    setDailyGoal(parseInt(goal));
-    console.log(`Daily Goal: ${goal}, Units: ${units}`);
-    setIsModalVisible(false);
+  const fetchSteps = async () => {
+    try {
+      console.log('Fetching steps data...');
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
+  
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+      const dataCollection = await userRef.collection('data').get();
+  
+      if (!dataCollection.empty) {
+        const userInfo = dataCollection.docs[0].data();
+        console.log('User Info:', userInfo);
+  
+        if (userInfo.stepInfo && userInfo.stepInfo.length > 0) {
+          const sortedStepInfo = userInfo.stepInfo.sort(
+            (a: { date: string | number | Date }, b: { date: string | number | Date }) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+          );
+  
+          const currentDate = new Date().toISOString().split('T')[0];
+          const todayEntry = sortedStepInfo.find(
+            (info: { date: string }) => info.date === currentDate
+          );
+  
+          if (todayEntry) {
+            console.log('Progresso diário de passos encontrado:', { steps: todayEntry.steps });
+            console.log('Meta diária de passos:', { dailyGoal: todayEntry.dailyGoal });
+  
+            setCurrentProgress(Number(todayEntry.steps)); // Atualiza o progresso diário
+            setDailyGoal(Number(todayEntry.dailyGoal)); // Atualiza a meta de passos
+          } else {
+            console.log('Nenhum progresso de passos encontrado para hoje, resetando...');
+            setCurrentProgress(0); // Reseta o progresso diário
+            setDailyGoal(10000); // Define a meta padrão de passos
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao buscar os dados de passos do usuário:', error);
+    }
+  };
+  
+  
+  const updateDailyGoal = async (newDailyGoal: string | React.SetStateAction<number>) => {
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
+  
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+  
+      // Busca os dados atuais do utilizador
+      const userDoc = await userRef.collection('data').get();
+      if (!userDoc.empty) {
+        const userInfo = userDoc.docs[0];
+        const stepsInfo = userInfo.data().stepsInfo || [];
+  
+        // Atualiza o dailyGoal no primeiro registro de stepsInfo
+        if (stepsInfo.length > 0) {
+          stepsInfo[0].dailyGoal = newDailyGoal;
+  
+          // Atualiza os dados no Firestore
+          await userRef.collection('data').doc(userInfo.id).update({
+            stepsInfo,
+          });
+          // Atualiza o estado local
+          setDailyGoal(Number(newDailyGoal));
+  
+          console.log('Meta diária de passos atualizada para:', newDailyGoal);
+        } else {
+          console.error('Nenhum registro encontrado em stepsInfo.');
+        }
+      } else {
+        console.error('Não foi possível encontrar dados do utilizador.');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar a meta diária de passos:', error);
+    }
   };
 
-
-  const currentProgress = steps / dailyGoal;
+  useEffect(() => {
+    console.log('Carregando dados de passos...');
+    fetchSteps();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -123,14 +197,13 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
       <View style={styles.mainContent}>
         <View style={styles.containerProgress}>
           <Progress.Circle
-            progress={currentProgress}
+            progress={currentProgress/dailyGoal}
             size={180}
             color={theme.colorDarkGreen}
             borderWidth={2}
             thickness={10}
             showsText={true}
           />
-          <Text>{steps}</Text>
         </View>
 
         {/* Info Cards */}
@@ -163,7 +236,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
       <StepsSettingsModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onSave={handleSaveSettings}
+        onSave={(newDailyGoal) => updateDailyGoal(newDailyGoal)}
       />
     </View>
   );
