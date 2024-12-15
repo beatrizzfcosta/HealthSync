@@ -150,10 +150,10 @@ export default function Perfil({ navigation }: { navigation: any }) {
           await userRef.collection('data').doc(docId).update({
             username: name,
             height: height,
-            "formattedWeights.weight": startingWeight,
+            'formattedWeights.weight': startingWeight,
             targetWeight: targetWeight,
             activityLevel: fitnessLevel,
-            profilePhotoUrl: photoUrl, 
+            profilePhotoUrl: photoUrl,
           });
         } else {
           console.warn('Por favor, preencha todos os campos antes de salvar.');
@@ -173,34 +173,36 @@ export default function Perfil({ navigation }: { navigation: any }) {
   const handleAddProfilePhoto = async () => {
     try {
       if (Platform.OS === 'android') {
-        const { status: mediaLibraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status: mediaLibraryStatus } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (mediaLibraryStatus !== 'granted') {
           alert('Desculpe, precisamos da permissão para acessar suas fotos!');
           return;
         }
 
-        const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        const { status: cameraStatus } =
+          await ImagePicker.requestCameraPermissionsAsync();
         if (cameraStatus !== 'granted') {
           alert('Desculpe, precisamos da permissão para acessar a câmera!');
           return;
         }
       }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      console.log('Imagem selecionada:', result.assets[0].uri);
-      setPhotoUrl(result.assets[0].uri);
+      if (!result.canceled) {
+        console.log('Imagem selecionada:', result.assets[0].uri);
+        setPhotoUrl(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Erro ao selecionar a foto de perfil:', error);
     }
-  } catch (error) {
-    console.error('Erro ao selecionar a foto de perfil:', error);
-  }
-};
+  };
 
   function handleDataSaveAndExit() {
     Alert.alert(
@@ -216,7 +218,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
           onPress: () => {
             saveData();
             navigation.navigate('Home');
-          }
+          },
         },
       ]
     );
@@ -245,125 +247,127 @@ export default function Perfil({ navigation }: { navigation: any }) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        {userProfilePicture ? (
-          <TouchableOpacity onPress={handleAddProfilePhoto}>
-            <Image
-            source={{ uri: userProfilePicture }}
-            style={styles.profileImage}
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          {userProfilePicture ? (
+            <TouchableOpacity onPress={handleAddProfilePhoto}>
+              <Image
+                source={{ uri: userProfilePicture }}
+                style={styles.profileImage}
+              />
+            </TouchableOpacity>
+          ) : (
+            <FontAwesome
+              name="user-circle"
+              size={125}
+              color={theme.colorDarkGreen}
             />
+          )}
+
+          <View style={styles.detailsContainer}>
+            <Text style={styles.secText}>{name}</Text>
+
+            <Text style={styles.secText}>{email}</Text>
+          </View>
+        </View>
+
+        <View style={styles.inputsOutsideContainer}>
+          <Text
+            style={{
+              paddingTop: 15,
+              textAlign: 'left',
+              fontFamily: 'Graduate',
+              fontSize: 20,
+              color: theme.colorDarkGreen,
+              width: '90%',
+            }}
+          >
+            Personal Details
+          </Text>
+
+          <View style={styles.inputsInsideContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.inputBox}
+                value={name}
+                placeholder={`Name`}
+                onChangeText={setName}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.inputBox}
+                value={birthDate.toISOString().split('T')[0]}
+                placeholder={`Birth Date`}
+                editable={false}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.inputBox}
+                value={height}
+                placeholder={`Height`}
+                onChangeText={setHeight}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.inputBox}
+                value={startingWeight}
+                placeholder={`Starting weight`}
+                onChangeText={setStartingWeight}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.inputBox}
+                value={targetWeight}
+                placeholder={`Target weight`}
+                onChangeText={setTargetWeight}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Dropdown
+                style={styles.inputBox}
+                data={activityLevels}
+                labelField="label"
+                valueField="value"
+                placeholder={
+                  !isFitnessLevelFocus ? 'Select Fitness Level' : '...'
+                }
+                value={fitnessLevel}
+                onFocus={() => setIsFitnessLevelFocus(true)}
+                onBlur={() => setIsFitnessLevelFocus(false)}
+                onChange={(item: any) => {
+                  setFitnessLevel(item.value);
+                  setIsFitnessLevelFocus(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleDataSaveAndExit}
+          >
+            <Text style={styles.buttonText}>Save & Leave</Text>
           </TouchableOpacity>
-        ) : (
-          <FontAwesome
-            name="user-circle"
-            size={125}
-            color={theme.colorDarkGreen}
-          />
-        )}
 
-        <View style={styles.detailsContainer}>
-          <Text style={styles.secText}>{name}</Text>
-
-          <Text style={styles.secText}>{email}</Text>
+          <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
       </View>
-
-      <View style={styles.inputsOutsideContainer}>
-        <Text
-          style={{
-            paddingTop: 15,
-            textAlign: 'left',
-            fontFamily: 'Graduate',
-            fontSize: 20,
-            color: theme.colorDarkGreen,
-            width: '90%',
-          }}
-        >
-          Personal Details
-        </Text>
-
-        <View style={styles.inputsInsideContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.inputBox}
-              value={name}
-              placeholder={`Name`}
-              onChangeText={setName}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.inputBox}
-              value={birthDate.toISOString().split('T')[0]}
-              placeholder={`Birth Date`}
-              editable={false}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={styles.inputBox}
-              value={height} 
-              placeholder={`Height`} 
-              onChangeText={setHeight}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={styles.inputBox}
-              value={startingWeight} 
-              placeholder={`Starting weight`} 
-              onChangeText={setStartingWeight}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={styles.inputBox}
-              value={targetWeight} 
-              placeholder={`Target weight`} 
-              onChangeText={setTargetWeight}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Dropdown
-              style={styles.inputBox}
-              data={activityLevels}
-              labelField="label"
-              valueField="value"
-              placeholder={
-                !isFitnessLevelFocus ? 'Select Fitness Level' : '...'
-              }
-              value={fitnessLevel}
-              onFocus={() => setIsFitnessLevelFocus(true)}
-              onBlur={() => setIsFitnessLevelFocus(false)}
-              onChange={(item: any) => {
-                setFitnessLevel(item.value);
-                setIsFitnessLevelFocus(false);
-              }}
-            />
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleDataSaveAndExit}>
-          <Text style={styles.buttonText}>Save & Leave</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
     </KeyboardAvoidingView>
   );
 }
