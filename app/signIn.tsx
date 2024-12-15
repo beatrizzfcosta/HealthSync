@@ -60,12 +60,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        animated={true}
-        backgroundColor={'#fff'}
-        barStyle={'dark-content'}
-        hidden={false}
-      />
+      
       <View style={styles.containerTitle}>
         <Text style={styles.title}>Welcome to{'\n'}HealthSync</Text>
         <FontAwesome5 name="heartbeat" size={35} color={theme.colorDarkGreen} />

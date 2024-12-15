@@ -3,9 +3,9 @@ import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <NavigationContainer>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+    <Stack screenOptions={{ headerShown: false }}>
+      <NavigationContainer >
+        <Stack.Screen name="index" />
       </NavigationContainer>
     </Stack>
   );
