@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.colorLightGreen,
     alignItems: 'center',
     height: '100%',
+    minHeight: '100%',
     width: '100%',
     flex: 1,
   },
@@ -54,7 +55,7 @@ export const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     height: '30%',
-    width: '80%',
+    width: '90%',
     alignItems: 'center',
     backgroundColor: theme.colorDarkGreen,
     justifyContent: 'center',
@@ -67,9 +68,10 @@ export const styles = StyleSheet.create({
   },
 
   inputContainer: {
+    borderRadius: 5,
     backgroundColor: 'white',
     height: '10%',
-    width: '80%',
+    width: '90%',
   },
 
   secText: {
@@ -86,4 +88,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  inputBox: {
+    paddingLeft: 10,
+    textAlignVertical: 'center',
+    textAlign: 'left',
+    height: '100%',
+    width: '100%',
+    borderRadius: 5,
+  }
+
 });

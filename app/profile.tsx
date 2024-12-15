@@ -1,9 +1,11 @@
 // React
 import React from 'react';
 import { useEffect, useState } from 'react';
+import ImagePicker from 'expo-image-picker';
 
 // Components
 import {
+  KeyboardAvoidingView,
   View,
   Text,
   StyleSheet,
@@ -18,9 +20,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Input } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
-import DatePicker from 'react-native-date-picker';
 
 // Database
 import auth from '@react-native-firebase/auth';
@@ -55,7 +55,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
   const [fitnessLevel, setFitnessLevel] = useState('');
 
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState('');
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
     null
   );
@@ -82,8 +82,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
       .catch((error) => console.error('Error loading fonts:', error));
   }, []);
 
-  console.log('22222222222222222222');
-
   // Function to get user data from database
   const fetchUserData = async () => {
     try {
@@ -104,8 +102,8 @@ export default function Perfil({ navigation }: { navigation: any }) {
           setEmail(user.email || '');
           setHeight(userInfo.height || '');
           setStartingWeight(userInfo.formattedWeights.weight || '');
-          setTargetWeight(userInfo.targetWeight.weight || '');
-          setPhotoUrl(userInfo.profilePhotoUrl || null);
+          setTargetWeight(userInfo.targetWeight || '');
+          setPhotoUrl(userInfo.profilePhotoUrl || '');
           setFitnessLevel(userInfo.activityLevel || '');
 
           if (
@@ -133,104 +131,50 @@ export default function Perfil({ navigation }: { navigation: any }) {
     fetchUserData();
   }, []);
 
-  /* Função para salvar as atualizações do perfil do usuário
-  const handleSave = async () => {
-    Alert.alert(
-      'Confirmação',
-      'Deseja mesmo fazer essa atualização?',
-      [
-        {
-          text: 'Não',
-          onPress: () => console.log('Atualização cancelada'),
-          style: 'cancel',
-        },
-        {
-          text: 'Sim',
-          onPress: async () => {
-            try {
-              const user = auth().currentUser;
-              if (!user) throw new Error('Utilizador não autenticado');
-          
-              const userId = user.uid;
-              const userRef = firestore().collection('users').doc(userId);
-          
-              // Obtendo a subcoleção 'data'
-             const dataCollection = await userRef.collection('data').get();
-          
-              if (!dataCollection.empty) {
-                // Atualiza o primeiro documento encontrado na subcoleção 'data'
-                const docId = dataCollection.docs[0].id;
-          
-                // Formata a data de nascimento antes de salvar
+  // handle the data save
+  const saveData = async () => {
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
 
-                if (height && weight && birthDate) {
-                  await userRef.collection('data').doc(docId).update({
-                    username,
-                    gender,
-                    birthDate,
-                    height: parseFloat(height),
-                    weight: parseFloat(weight),
-                    activityLevel,
-                    profilePhotoUrl: photoUrl // Atualizar a foto de perfil
-                  });
-                } else {
-                  console.warn('Por favor, preencha todos os campos antes de salvar.');
-                }
-          
-                console.log('Dados atualizados com sucesso');
-          
-                // Atualiza os dados do estado chamando novamente o `fetchUserData`
-                fetchUserData();
-          
-                // Redefine `isEditing` para `false` após salvar os dados
-                setIsEditing({
-                  username: false,
-                  gender: false,
-                  birthDate: false,
-                  height: false,
-                  weight: false,
-                  activityLevel: false,
-                });
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+      const dataCollection = await userRef.collection('data').get();
 
-                // Navega para a homepage após salvar
-                // navigation.navigate('homePage');
-              } else {
-                console.warn('Nenhum documento encontrado na subcoleção "data" do usuário para atualizar');
-              }
-            } catch (error) {
-              console.error('Erro ao atualizar os dados do usuário:', error);
-            }
-          },
-        },
-      ]
-    );
-  };*/
+      if (!dataCollection.empty) {
+        // Atualiza o primeiro documento encontrado na subcoleção 'data'
+        const docId = dataCollection.docs[0].id;
 
-  /* Função para voltar à página inicial com confirmação
-  const handleHomePage = () => {
-    Alert.alert(
-      'Nenhuma atualização será feita',
-      'Deseja mesmo voltar a página inicial?',
-      [
-        {
-          text: 'Não',
-          onPress: () => console.log('Atualização cancelada'),
-          style: 'cancel',
-        },
-        {
-          text: "sim",
-          onPress: () => navigation.navigate('homePage'),
+        // Formata a data de nascimento antes de salvar
+        if (height && startingWeight && birthDate) {
+          await userRef.collection('data').doc(docId).update({
+            username: name,
+            height: height,
+            "formattedWeights.weight": startingWeight,
+            targetWeight: targetWeight,
+            activityLevel: fitnessLevel,
+            profilePhotoUrl: photoUrl, 
+          });
+        } else {
+          console.warn('Por favor, preencha todos os campos antes de salvar.');
         }
-        ])
-  };*/
+
+        console.log('Dados atualizados com sucesso');
+
+        // Atualiza os dados do estado chamando novamente o `fetchUserData`
+        fetchUserData();
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar os dados do usuário:', error);
+    }
+  };
 
   // Função para adicionar foto de perfil
-  /*
   const handleAddProfilePhoto = async () => {
     try {
       if (Platform.OS === 'android') {
-        let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
+        const { status: mediaLibraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (mediaLibraryStatus !== 'granted') {
           alert('Desculpe, precisamos da permissão para acessar suas fotos!');
           return;
         }
@@ -242,21 +186,21 @@ export default function Perfil({ navigation }: { navigation: any }) {
         }
       }
 
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
 
-      if (!result.canceled) {
-        console.log('Imagem selecionada:', result.assets[0].uri);
-        setPhotoUrl(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('Erro ao selecionar a foto de perfil:', error);
+    if (!result.canceled) {
+      console.log('Imagem selecionada:', result.assets[0].uri);
+      setPhotoUrl(result.assets[0].uri);
     }
-  };*/
+  } catch (error) {
+    console.error('Erro ao selecionar a foto de perfil:', error);
+  }
+};
 
   function handleDataSaveAndExit() {
     Alert.alert(
@@ -269,7 +213,10 @@ export default function Perfil({ navigation }: { navigation: any }) {
         },
         {
           text: 'Yes',
-          onPress: () => navigation.navigate('Home'),
+          onPress: () => {
+            saveData();
+            navigation.navigate('Home');
+          }
         },
       ]
     );
@@ -297,6 +244,11 @@ export default function Perfil({ navigation }: { navigation: any }) {
   }
 
   return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+
     <View style={styles.container}>
       <StatusBar
         animated={true}
@@ -306,10 +258,12 @@ export default function Perfil({ navigation }: { navigation: any }) {
       />
       <View style={styles.imageContainer}>
         {userProfilePicture ? (
-          <Image
+          <TouchableOpacity onPress={handleAddProfilePhoto}>
+            <Image
             source={{ uri: userProfilePicture }}
             style={styles.profileImage}
-          />
+            />
+          </TouchableOpacity>
         ) : (
           <FontAwesome
             name="user-circle"
@@ -342,6 +296,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
         <View style={styles.inputsInsideContainer}>
           <View style={styles.inputContainer}>
             <TextInput
+              style={styles.inputBox}
               value={name}
               placeholder={`Name`}
               onChangeText={setName}
@@ -350,6 +305,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
 
           <View style={styles.inputContainer}>
             <TextInput
+              style={styles.inputBox}
               value={birthDate.toISOString().split('T')[0]}
               placeholder={`Birth Date`}
               editable={false}
@@ -357,20 +313,35 @@ export default function Perfil({ navigation }: { navigation: any }) {
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput value={height} placeholder={`Height`} />
+            <TextInput 
+              style={styles.inputBox}
+              value={height} 
+              placeholder={`Height`} 
+              onChangeText={setHeight}
+            />
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput value={startingWeight} placeholder={`Starting weight`} />
+            <TextInput 
+              style={styles.inputBox}
+              value={startingWeight} 
+              placeholder={`Starting weight`} 
+              onChangeText={setStartingWeight}
+            />
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput value={targetWeight} placeholder={`Target weight`} />
+            <TextInput 
+              style={styles.inputBox}
+              value={targetWeight} 
+              placeholder={`Target weight`} 
+              onChangeText={setTargetWeight}
+            />
           </View>
 
           <View style={styles.inputContainer}>
             <Dropdown
-              //style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+              style={styles.inputBox}
               data={activityLevels}
               labelField="label"
               valueField="value"
@@ -399,5 +370,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
         </TouchableOpacity>
       </View>
     </View>
+     </KeyboardAvoidingView>
   );
 }
