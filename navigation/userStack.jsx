@@ -59,17 +59,16 @@ const Stack = createStackNavigator();
 
 export default function UserStack() {
   return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="DataWater" component={DataWaterScreen} />
-        <Stack.Screen name="DataSteps" component={DataStepsScreen} />
-        <Stack.Screen name="AlertSettings" component={AlertSettingsScreen} />
-        <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
-        <Stack.Screen name="Steps" component={StepsScreen} />
-        <Stack.Screen name="Activity" component={ActivityScreen} />
-        <Stack.Screen name="WeightIn" component={WeightInScreen} />
-      </Stack.Navigator>
-
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="DataWater" component={DataWaterScreen} />
+      <Stack.Screen name="DataSteps" component={DataStepsScreen} />
+      <Stack.Screen name="AlertSettings" component={AlertSettingsScreen} />
+      <Stack.Screen name="HomeSettings" component={HomeSettingScreen} />
+      <Stack.Screen name="Steps" component={StepsScreen} />
+      <Stack.Screen name="Activity" component={ActivityScreen} />
+      <Stack.Screen name="WeightIn" component={WeightInScreen} />
+    </Stack.Navigator>
   );
 }

@@ -20,7 +20,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import DatePicker from 'react-native-date-picker';
 import { formatDate } from '../components/formatDate'; // Ajuste o caminho conforme necessário
 import { styles } from './styles/signUpStyles';
-import { calculateWaterGoal } from '../utils/waterQuantity'
+import { calculateWaterGoal } from '../utils/waterQuantity';
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -63,7 +63,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     try {
       const auth = getAuth();
       console.log(auth);
-      console.log("Email:" , email);
+      console.log('Email:', email);
       // Cria o usuário com e-mail e senha
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -84,28 +84,34 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         },
       ];
       console.log('Pesos formatados:', formattedWeights);
-      
+
       const stepsInfo = [
         {
           steps: 0,
           date: currentDate,
-          dailyGoal: 10000
-        }
-      ]
-
+          dailyGoal: 10000,
+        },
+      ];
+      const activityInfo = [
+        {
+          activity: [],
+          time: 0,
+          Calories: 0,
+        },
+      ];
       const waterInfo = [
         {
           water: 0,
           date: currentDate,
           dailyGoal: calculateWaterGoal(birthDate, parseFloat(weight)),
-        }
-      ]
+        },
+      ];
 
       const targetWeight = [
         {
           weight: `${weight}`,
-        }
-      ] 
+        },
+      ];
 
       // Adiciona dados adicionais em uma subcoleção
       await userRef.collection('data').add({
@@ -117,7 +123,8 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         gender,
         activityLevel,
         stepsInfo,
-        waterInfo
+        waterInfo,
+        activityInfo,
       });
 
       // Adicção das Refeições defaults para o utilizador

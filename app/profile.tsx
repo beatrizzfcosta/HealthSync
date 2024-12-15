@@ -250,12 +250,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
     >
 
     <View style={styles.container}>
-      <StatusBar
-        animated={true}
-        backgroundColor={theme.colorDarkGreen}
-        barStyle={'dark-content'}
-        hidden={false}
-      />
       <View style={styles.imageContainer}>
         {userProfilePicture ? (
           <TouchableOpacity onPress={handleAddProfilePhoto}>
@@ -273,9 +267,9 @@ export default function Perfil({ navigation }: { navigation: any }) {
         )}
 
         <View style={styles.detailsContainer}>
-          <Text style={styles.secText}>Nome</Text>
+          <Text style={styles.secText}>{name}</Text>
 
-          <Text style={styles.secText}>Email</Text>
+          <Text style={styles.secText}>{email}</Text>
         </View>
       </View>
 
@@ -370,6 +364,6 @@ export default function Perfil({ navigation }: { navigation: any }) {
         </TouchableOpacity>
       </View>
     </View>
-     </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
   );
 }

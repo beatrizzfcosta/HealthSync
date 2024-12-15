@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from 'react-native';
 import {
   Ionicons,
   FontAwesome,
@@ -12,6 +20,14 @@ import { theme } from '../assets/theme';
 import * as Progress from 'react-native-progress';
 import StepsSettingsModal from '../components/stepsSettings';
 import { styles } from './styles/dataActivitiesStyles';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+
+interface User {
+  calorias: number;
+  activities: string[];
+  time: number;
+}
 export default function ActivitiesScreen({ navigation }: { navigation: any }) {
   const [dailyGoal, setDailyGoal] = useState('7000');
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
@@ -55,10 +71,122 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
   ];
   const currentProgress = 250 / parseInt(dailyGoal);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [time, setTime] = useState('');
+  const [calorias, setCalorias] = useState('');
+  const [loading, setLoading] = useState(false);
   function handleSaveSettings(dailyGoal: string, units: string): void {
     throw new Error('Function not implemented.');
   }
+  useEffect(() => {
+    const fetchActivityData = async () => {
+      try {
+        const user = auth().currentUser;
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
 
+        const userId = user.uid;
+        const userRef = firestore().collection('users').doc(userId);
+
+        // Fetch the 'data' collection
+        const dataSnapshot = await userRef.collection('data').get();
+
+        if (!dataSnapshot.empty) {
+          const userData = dataSnapshot.docs[0].data(); // Assuming first document
+
+          setActivities(userData.activities || []);
+          setTime(userData.time);
+          setCalorias(userData.calorias);
+        } else {
+          Alert.alert('Info', 'No activity data found.');
+        }
+      } catch (error) {
+        console.error('Error fetching activity data:', error);
+        Alert.alert('Error', 'Failed to fetch activity data.');
+      }
+    };
+
+    fetchActivityData();
+  }, []);
+
+  const onSaveUser = async () => {
+    if (!activities || !time || !calorias) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    setLoading(true);
+    const userData = {
+      activities,
+      time,
+      calorias,
+    };
+
+    try {
+      const userId = auth().currentUser?.uid;
+      if (!userId) throw new Error('Utilizador não autenticado');
+
+      try {
+        const userRef = firestore().collection('users').doc(userId);
+        const dataRef = userRef.collection('data');
+
+        const existingDocs = await dataRef.limit(1).get();
+
+        if (!existingDocs.empty) {
+          const docId = existingDocs.docs[0].id;
+          await dataRef.doc(docId).update({
+            ...userData,
+            updatedAt: firestore.FieldValue.serverTimestamp(),
+          });
+          console.log('Data updated in Firebase:', docId);
+        } else {
+          const newDocRef = await dataRef.add({
+            ...userData,
+            createdAt: firestore.FieldValue.serverTimestamp(),
+          });
+          console.log('New data created in Firebase:', newDocRef.id);
+        }
+      } catch (error) {
+        console.error('Error saving data to Firebase:', error);
+        throw new Error('Failed to save or update data');
+      }
+      Alert.alert('Sucesso', 'Informações salvas com sucesso!');
+    } catch (error) {
+      console.error('Error adding document: ', error);
+      Alert.alert(
+        'Erro',
+        'Erro ao criar o utilizador. Por favor, tente novamente.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchActivityData = async () => {
+    try {
+      const user = auth().currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+
+      // Fetch the 'data' collection
+      const dataSnapshot = await userRef.collection('data').get();
+
+      if (!dataSnapshot.empty) {
+        const userData = dataSnapshot.docs[0].data(); // Assuming first document
+        console.log('Fetched Activity Data:', userData.activityInfo);
+        return userData.activityInfo;
+      } else {
+        Alert.alert('Info', 'No activity data found.');
+      }
+    } catch (error) {
+      console.error('Error fetching activity data:', error);
+      Alert.alert('Error', 'Failed to fetch activity data.');
+    }
+  };
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -135,7 +263,13 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
               color="#000"
             />
             <View style={styles.cardContent}>
-              <Text style={styles.cardText}>74</Text>
+              <TextInput
+                style={[styles.cardText]}
+                value={time}
+                onChangeText={(text) => setTime(text)} // Updates the `calorias` state with the input value
+                keyboardType="numeric"
+                placeholder="0"
+              />
               <Text style={styles.cardTextSubtitle}>min</Text>
               <Text style={styles.cardSubtitle}>TimeSpent</Text>
             </View>
@@ -148,7 +282,14 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
               color="#000"
             />
             <View style={styles.cardContent}>
-              <Text style={styles.cardText}>54</Text>
+              <TextInput
+                style={[styles.cardText]}
+                value={calorias}
+                onChangeText={(text) => setCalorias(text)}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+
               <Text style={styles.cardTextSubtitle}>kcal</Text>
               <Text style={styles.cardSubtitle}>Calories</Text>
             </View>
@@ -157,22 +298,22 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
 
         {/* Week Data */}
 
-        <Text style={styles.weekTitle}>WEEK DATA</Text>
-      </View>
-      {/* Footer */}
-      <View style={styles.footer}>
         <TouchableOpacity
-          style={styles.settingsButton}
-          onPress={() => setIsModalVisible(true)}
+          style={styles.button}
+          onPress={() => {
+            if (!time || !calorias || activities.length === 0) {
+              Alert.alert('Error', 'Please fill in all fields.');
+              return;
+            }
+
+            onSaveUser();
+          }}
         >
-          <FontAwesome6 name="gear" size={30} color={theme.colorDarkGreen} />
+          <Text style={styles.buttonText}>Guardar</Text>
         </TouchableOpacity>
       </View>
-      <StepsSettingsModal
-        visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onSave={handleSaveSettings}
-      />
+      {/* Footer */}
+      <View style={styles.footer}></View>
     </View>
   );
 }

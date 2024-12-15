@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
   View,
 } from 'react-native';
 import notifee, { AndroidImportance } from '@notifee/react-native';
@@ -14,7 +15,7 @@ import {
   FIREBASE_DB,
   FIREBASE_REALTIME_DB,
 } from '../config/healthsyncConfig';
-
+import { theme } from '../assets/theme';
 async function setupNotificationChannel() {
   await notifee.createChannel({
     id: 'Reminder',
@@ -66,7 +67,7 @@ export default function Index() {
     //Abrir a RootNavigation para verificar se o utilizador está ativo
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
+      style={{ flex: 1, marginTop: 40 }}
     >
       <RootNavigation />
     </KeyboardAvoidingView>

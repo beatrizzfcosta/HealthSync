@@ -48,8 +48,10 @@ export const styles = StyleSheet.create({
     },
     cardContent: {
       alignItems: 'center',
+     
     },
     cardText: {
+      justifyContent: 'center',
       fontSize: 20,
       fontWeight: 'bold',
       color: '#000',
@@ -105,6 +107,20 @@ export const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 16,
       right: 16,
+    },
+    button: {
+      borderRadius: 20,
+      height: '10%',
+      width: '50%',
+      alignItems: 'center',
+      backgroundColor: theme.colorDarkGreen,
+      justifyContent: 'center',
+    },
+  
+    buttonText: {
+      color: theme.colorLightGreen,
+      fontSize: 14,
+      fontFamily: 'Graduate',
     },
     settingsButton: {
       position: 'absolute',
