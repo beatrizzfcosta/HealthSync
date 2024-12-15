@@ -104,6 +104,43 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
   };
   
 
+  const updateDailyGoal = async (newDailyGoal: string | React.SetStateAction<number>) => {
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('Utilizador não autenticado');
+  
+      const userId = user.uid;
+      const userRef = firestore().collection('users').doc(userId);
+  
+      // Busca os dados atuais do utilizador
+      const userDoc = await userRef.collection('data').get();
+      if (!userDoc.empty) {
+        const userInfo = userDoc.docs[0];
+        const waterInfo = userInfo.data().waterInfo || [];
+  
+        // Atualiza o dailyGoal no primeiro registro de waterInfo
+        if (waterInfo.length > 0) {
+          waterInfo[0].dailyGoal = newDailyGoal;
+  
+          // Atualiza os dados no Firestore
+          await userRef.collection('data').doc(userInfo.id).update({
+            waterInfo,
+          });
+          // Atualiza o estado local
+          setDailyGoal(Number(newDailyGoal));
+  
+          console.log('Meta diária de água atualizada para:', newDailyGoal);
+        } else {
+          console.error('Nenhum registro encontrado em waterInfo.');
+        }
+      } else {
+        console.error('Não foi possível encontrar dados do utilizador.');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar a meta diária de água:', error);
+    }
+  };
+  
   useEffect(() => {
       console.log('entrei no useEffect')
       fetchWeights();
@@ -243,7 +280,7 @@ export default function WaterDataScreen({ navigation }: { navigation: any }) {
       <WaterSettingsModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onSave={handleSaveSettings}
+        onSave={(newDailyGoal) => updateDailyGoal(newDailyGoal)}
       />
     </View>
   );

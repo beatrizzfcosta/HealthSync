@@ -74,13 +74,13 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
 
       const formatBirthDate = formatDate(birthDate);
       // Calcula o DRI antes de armazenar
-
+      const currentDate = new Date().toISOString().split('T')[0];
       // Referência ao documento do usuário
       const userRef = firestore().collection('users').doc(user.uid);
       const formattedWeights = [
         {
           weight: `${weight}`, // ou Number(weight)
-          date: new Date().toISOString(),
+          date: currentDate,
         },
       ];
       console.log('Pesos formatados:', formattedWeights);
@@ -88,7 +88,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
       const stepsInfo = [
         {
           steps: 0,
-          date: new Date().toISOString(),
+          date: currentDate,
           dailyGoal: 10000
         }
       ]
@@ -96,7 +96,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
       const waterInfo = [
         {
           water: 0,
-          date: new Date().toISOString(),
+          date: currentDate,
           dailyGoal: calculateWaterGoal(birthDate, parseFloat(weight)),
         }
       ]

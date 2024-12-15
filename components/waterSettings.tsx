@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { theme } from '../assets/theme';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 
 interface WaterSettingsModalProps {
   visible: boolean;
@@ -20,16 +23,22 @@ interface WaterSettingsModalProps {
 const WaterSettingsModal= ({
   visible,
   onClose,
-  onSave,
+  onSave
 }: WaterSettingsModalProps) => {
-  const [dailyGoal, setDailyGoal] = useState('2000');
+  const [newDailyGoal, setNewDailyGoal] = useState('2000');
   const [units, setUnits] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
   const handleSave = () => {
-    onSave(dailyGoal, units);
-    onClose(); // Fecha o modal após salvar
+    const parsedDailyGoal = Number(newDailyGoal);
+    if (!isNaN(parsedDailyGoal) && parsedDailyGoal > 0) {
+      onSave(parsedDailyGoal.toString(), 'ml'); // Chama a função updateDailyGoal passando o novo valor
+      onClose(); // Fecha o modal
+    } else {
+      console.error('Meta diária inválida.');
+    }
   };
+  
 
   return (
     <Modal
@@ -73,8 +82,8 @@ const WaterSettingsModal= ({
               <TextInput
                 style={styles.input}
                 placeholder="Daily Goal"
-                value={dailyGoal}
-                onChangeText={setDailyGoal}
+                value={newDailyGoal}
+                onChangeText={setNewDailyGoal}
               />
               <TextInput
                 style={styles.input}
