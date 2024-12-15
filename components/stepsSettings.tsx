@@ -34,6 +34,16 @@ interface stepsSettingsModalProps {
         console.error('Meta diária inválida.');
       }
     };
+
+    const restoreDefault = () => {
+      const parsedDailyGoal = 10000;
+      if (!isNaN(parsedDailyGoal) && parsedDailyGoal > 0) {
+        onSave(parsedDailyGoal.toString()); // Chama a função updateDailyGoal passando o novo valor
+        onClose(); // Fecha o modal
+      } else {
+        console.error('Meta diária inválida.');
+      }
+    };
     
   
   const amounts = [
@@ -111,7 +121,7 @@ interface stepsSettingsModalProps {
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={restoreDefault}>
                 <Text style={styles.restoreDefaults}>Restore Default</Text>
               </TouchableOpacity>
             </View>

@@ -12,12 +12,13 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { theme } from '../assets/theme';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { calculateWaterGoal } from '../utils/waterQuantity';
 
 
 interface WaterSettingsModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (dailyGoal: string, units: string) => void;
+  onSave: (dailyGoal: string) => void;
 }
 
 const WaterSettingsModal= ({
@@ -32,10 +33,35 @@ const WaterSettingsModal= ({
   const handleSave = () => {
     const parsedDailyGoal = Number(newDailyGoal);
     if (!isNaN(parsedDailyGoal) && parsedDailyGoal > 0) {
-      onSave(parsedDailyGoal.toString(), 'ml'); // Chama a função updateDailyGoal passando o novo valor
+      onSave(parsedDailyGoal.toString()); // Chama a função updateDailyGoal passando o novo valor
       onClose(); // Fecha o modal
     } else {
       console.error('Meta diária inválida.');
+    }
+  };
+  
+  const restoreDefault = async () => {
+    try {
+      const user = auth().currentUser;
+      if (!user) {
+        console.error('Usuário não autenticado.');
+        return;
+      }
+  
+      // Buscar dados do utilizador no Firestore
+      const userDoc = await firestore().collection('users').doc(user.uid).get();
+      const userData = userDoc.data();
+  
+      if (!userData || !userData.birthDate || !userData.weight) {
+        console.error('Data de nascimento ou peso não encontrados.');
+        return;
+      }
+  
+      // Calcular meta padrão de água
+      const defaultDailyGoal = calculateWaterGoal(userData.birthDate, userData.weight);
+      setNewDailyGoal(defaultDailyGoal.toString());
+    } catch (error) {
+      console.error('Erro ao restaurar o padrão:', error);
     }
   };
   
@@ -94,7 +120,7 @@ const WaterSettingsModal= ({
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={restoreDefault}>
                 <Text style={styles.restoreDefaults}>Restore Default</Text>
               </TouchableOpacity>
             </View>
