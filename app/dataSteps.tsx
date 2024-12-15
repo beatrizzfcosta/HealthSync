@@ -15,7 +15,6 @@ import { Constants } from 'expo-constants';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-
 export default function StepsScreen({ navigation }: { navigation: any }) {
   const [steps, setSteps] = useState(0);
   const [isCounting, setIsCounting] = useState(false);
@@ -30,10 +29,10 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
   const [userHeight, setUserHeight] = useState(170); // Altura do usuário (em cm)
   const [userGender, setUserGender] = useState('male'); // Gênero do usuário ('male' ou 'female')
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentProgress,setCurrentProgress] = useState(0);
+  const [currentProgress, setCurrentProgress] = useState(0);
 
   useEffect(() => {
-    let subscription: { remove: any; };
+    let subscription: { remove: any };
     Accelerometer.isAvailableAsync().then((result) => {
       if (result) {
         subscription = Accelerometer.addListener((accelerometerData) => {
@@ -44,11 +43,11 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
           if (
             Math.abs(y - lastY) > threshold &&
             !isCounting &&
-            (timestamp - lastTimestamp > 800)
+            timestamp - lastTimestamp > 800
           ) {
-            setIsCounting(true)
-            setLastY(y)
-            setLastTimestamp(timestamp)
+            setIsCounting(true);
+            setLastY(y);
+            setLastTimestamp(timestamp);
 
             setSteps((prevSteps) => {
               const newSteps = prevSteps + 1;
@@ -59,60 +58,68 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
                 userGender === 'male'
                   ? (0.415 * userHeight) / 100000 // Altura convertida para km
                   : (0.413 * userHeight) / 100000; // Altura convertida para km
-              setDistance((newSteps * strideLength)); // Distância já em km
+              setDistance(newSteps * strideLength); // Distância já em km
 
               return newSteps;
             });
 
             setTimeout(() => {
-              setIsCounting(false)
-            }, 1200)
+              setIsCounting(false);
+            }, 1200);
           }
-        })
+        });
       } else {
-        console.log("Accelerometer not avaiable on this device")
+        console.log('Accelerometer not avaiable on this device');
       }
-    })
+    });
     return () => {
       if (subscription) {
-        subscription.remove()
+        subscription.remove();
       }
-    }
-  }, [isCounting, lastY, lastTimestamp])
+    };
+  }, [isCounting, lastY, lastTimestamp]);
 
   const fetchSteps = async () => {
     try {
       console.log('Fetching steps data...');
       const user = auth().currentUser;
       if (!user) throw new Error('Utilizador não autenticado');
-  
+
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
       const dataCollection = await userRef.collection('data').get();
-  
+
       if (!dataCollection.empty) {
         const userInfo = dataCollection.docs[0].data();
         console.log('User Info:', userInfo);
-  
+
         if (userInfo.stepInfo && userInfo.stepInfo.length > 0) {
           const sortedStepInfo = userInfo.stepInfo.sort(
-            (a: { date: string | number | Date }, b: { date: string | number | Date }) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime()
+            (
+              a: { date: string | number | Date },
+              b: { date: string | number | Date }
+            ) => new Date(b.date).getTime() - new Date(a.date).getTime()
           );
-  
+
           const currentDate = new Date().toISOString().split('T')[0];
           const todayEntry = sortedStepInfo.find(
             (info: { date: string }) => info.date === currentDate
           );
-  
+
           if (todayEntry) {
-            console.log('Progresso diário de passos encontrado:', { steps: todayEntry.steps });
-            console.log('Meta diária de passos:', { dailyGoal: todayEntry.dailyGoal });
-  
+            console.log('Progresso diário de passos encontrado:', {
+              steps: todayEntry.steps,
+            });
+            console.log('Meta diária de passos:', {
+              dailyGoal: todayEntry.dailyGoal,
+            });
+
             setCurrentProgress(Number(todayEntry.steps)); // Atualiza o progresso diário
             setDailyGoal(Number(todayEntry.dailyGoal)); // Atualiza a meta de passos
           } else {
-            console.log('Nenhum progresso de passos encontrado para hoje, resetando...');
+            console.log(
+              'Nenhum progresso de passos encontrado para hoje, resetando...'
+            );
             setCurrentProgress(0); // Reseta o progresso diário
             setDailyGoal(10000); // Define a meta padrão de passos
           }
@@ -122,34 +129,34 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
       console.error('Erro ao buscar os dados de passos do usuário:', error);
     }
   };
-  
+
   const updateStepsOnFirestore = async (newSteps: number) => {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('Utilizador não autenticado');
-  
+
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
-  
+
       // Busca os dados atuais do Firestore
       const userDoc = await userRef.collection('data').get();
       if (!userDoc.empty) {
         const userInfo = userDoc.docs[0];
         const stepsInfo = userInfo.data().stepInfo || [];
-  
+
         const currentDate = new Date().toISOString().split('T')[0];
-  
+
         // Verifica se há uma entrada para hoje
         const existingEntryIndex = stepsInfo.findIndex(
           (info: { date: string }) => info.date === currentDate
         );
-  
+
         let updatedStepInfo;
-  
+
         if (existingEntryIndex !== -1) {
           // Soma os novos passos aos passos existentes
           stepsInfo[existingEntryIndex].steps += newSteps;
-  
+
           updatedStepInfo = [...stepsInfo];
         } else {
           // Cria uma nova entrada se não existir
@@ -158,52 +165,55 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
             { date: currentDate, steps: newSteps, dailyGoal: dailyGoal },
           ];
         }
-  
+
         // Atualiza no Firestore
         await userRef.collection('data').doc(userInfo.id).update({
           stepInfo: updatedStepInfo,
         });
-  
-        console.log('Passos atualizados para o dia atual:', stepsInfo[existingEntryIndex]?.steps || newSteps);
+
+        console.log(
+          'Passos atualizados para o dia atual:',
+          stepsInfo[existingEntryIndex]?.steps || newSteps
+        );
       }
     } catch (error) {
       console.error('Erro ao atualizar os passos no Firestore:', error);
     }
   };
-  
-  
+
   useEffect(() => {
     if (steps > 0) {
       updateStepsOnFirestore(1);
     }
   }, [steps]);
-  
-  
-  const updateDailyGoal = async (newDailyGoal: string | React.SetStateAction<number>) => {
+
+  const updateDailyGoal = async (
+    newDailyGoal: string | React.SetStateAction<number>
+  ) => {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('Utilizador não autenticado');
-  
+
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
-  
+
       // Busca os dados atuais do utilizador
       const userDoc = await userRef.collection('data').get();
       if (!userDoc.empty) {
         const userInfo = userDoc.docs[0];
         const stepsInfo = userInfo.data().stepsInfo || [];
-  
+
         // Atualiza o dailyGoal no primeiro registro de stepsInfo
         if (stepsInfo.length > 0) {
           stepsInfo[0].dailyGoal = newDailyGoal;
-  
+
           // Atualiza os dados no Firestore
           await userRef.collection('data').doc(userInfo.id).update({
             stepsInfo,
           });
           // Atualiza o estado local
           setDailyGoal(Number(newDailyGoal));
-  
+
           console.log('Meta diária de passos atualizada para:', newDailyGoal);
         } else {
           console.error('Nenhum registro encontrado em stepsInfo.');
@@ -234,7 +244,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
           />
         </TouchableOpacity>
         <Text style={styles.title}>Steps Tracker</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           {userProfilePicture ? (
             <Image
               source={{ uri: userProfilePicture }}
@@ -245,6 +255,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
               name="user-circle"
               size={35}
               color={theme.colorDarkGreen}
+              onPress={() => navigation.navigate('Profile')}
             />
           )}
         </TouchableOpacity>
@@ -252,7 +263,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
       <View style={styles.mainContent}>
         <View style={styles.containerProgress}>
           <Progress.Circle
-            progress={currentProgress/dailyGoal}
+            progress={currentProgress / dailyGoal}
             size={180}
             color={theme.colorDarkGreen}
             borderWidth={2}
@@ -260,7 +271,7 @@ export default function StepsScreen({ navigation }: { navigation: any }) {
             showsText={true}
           />
         </View>
-          <Text>{steps}</Text>
+        <Text>{steps}</Text>
         {/* Info Cards */}
         <View style={styles.infoCards}>
           <View style={styles.card}>

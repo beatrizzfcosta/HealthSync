@@ -211,6 +211,7 @@ export default function ActivitiesScreen({ navigation }: { navigation: any }) {
               name="user-circle"
               size={35}
               color={theme.colorDarkGreen}
+              onPress={() => navigation.navigate('Profile')}
             />
           )}
         </TouchableOpacity>

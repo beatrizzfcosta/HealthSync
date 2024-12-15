@@ -31,13 +31,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => auth().signOut()}>
-          <FontAwesome
-            name="heartbeat"
-            size={30}
-            color={theme.colorDarkGreen}
-          />
-        </TouchableOpacity>
         <Text style={styles.title}>Home</Text>
         <TouchableOpacity>
           {userProfilePicture ? (
@@ -70,13 +63,19 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
       </View>
       <View style={styles.alertContainer}>
         <Text style={styles.alertText}>YOU SHOULD DRINK WATER</Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('DataWater')}
+        >
           <Text style={styles.buttonText}>Log Data</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.alertContainer}>
         <Text style={styles.alertText}>YOU SHOULD MOVE YOUR BODY</Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Activity')}
+        >
           <Text style={styles.buttonText}>See Your Move Data</Text>
         </TouchableOpacity>
       </View>
@@ -84,9 +83,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
       {/* Highlights Section */}
       <View style={styles.highlightsHeader}>
         <Text style={styles.sectionTitle}>HIGHLIGHTS</Text>
-        <TouchableOpacity>
-          <Text style={styles.viewMore}>View more</Text>
-        </TouchableOpacity>
       </View>
       <View style={styles.highlightsContainer}>
         <TouchableOpacity

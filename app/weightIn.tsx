@@ -12,26 +12,30 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
   const [integerPart, setIntegerPart] = useState<number>(45);
   const [decimalPart, setDecimalPart] = useState<number>(0);
   const [unit, setUnit] = useState<string>('kg');
-  const [userProfilePicture, setUserProfilePicture] = useState<string | null>(null);
+  const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
+    null
+  );
 
   const fetchWeights = async () => {
     try {
-      console.log('entrei no fetch user')
+      console.log('entrei no fetch user');
       const user = auth().currentUser;
       if (!user) throw new Error('Utilizador não autenticado');
 
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
       const dataCollection = await userRef.collection('data').get();
-      console.log(dataCollection.docs[0].data())
+      console.log(dataCollection.docs[0].data());
       if (!dataCollection.empty) {
         const userInfo = dataCollection.docs[0].data();
-       // const userInfo = dataCollection.data() || { formattedWeights: [] };
-        console.log('dataCollection Existe')
+        // const userInfo = dataCollection.data() || { formattedWeights: [] };
+        console.log('dataCollection Existe');
         if (userInfo.formattedWeights && userInfo.formattedWeights.length > 0) {
           const sortedWeights = userInfo.formattedWeights.sort(
-            (a: { date: string | number | Date }, b: { date: string | number | Date }) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime()
+            (
+              a: { date: string | number | Date },
+              b: { date: string | number | Date }
+            ) => new Date(b.date).getTime() - new Date(a.date).getTime()
           );
 
           const latestWeight = sortedWeights[0];
@@ -42,7 +46,10 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
 
           setIntegerPart(intPart);
           setDecimalPart(decPart || 0);
-          console.log('Peso mais recente carregado com sucesso:', { intPart, decPart });
+          console.log('Peso mais recente carregado com sucesso:', {
+            intPart,
+            decPart,
+          });
         }
       }
     } catch (error) {
@@ -65,20 +72,29 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
       const weights = userInfo.formattedWeights || [];
 
       // Substituir peso do dia atual ou adicionar novo peso
-      const existingWeightIndex = weights.findIndex((w: { date: string }) => w.date === currentDate);
+      const existingWeightIndex = weights.findIndex(
+        (w: { date: string }) => w.date === currentDate
+      );
 
       if (existingWeightIndex > -1) {
         weights[existingWeightIndex].weight = newWeight;
       } else {
-        const previousWeight = weights[0]?.weight || `${integerPart}.${decimalPart}`;
-        weights.unshift({ date: currentDate, weight: newWeight || previousWeight });
+        const previousWeight =
+          weights[0]?.weight || `${integerPart}.${decimalPart}`;
+        weights.unshift({
+          date: currentDate,
+          weight: newWeight || previousWeight,
+        });
       }
 
       userInfo.formattedWeights = weights;
       await dataDoc.set(userInfo);
 
       console.log('Peso atualizado com sucesso:', newWeight);
-      console.log('Lista atualizada de pesos após salvar:', userInfo.formattedWeights);
+      console.log(
+        'Lista atualizada de pesos após salvar:',
+        userInfo.formattedWeights
+      );
 
       fetchWeights(); // Atualiza o estado local com os novos valores
     } catch (error) {
@@ -87,7 +103,7 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
   };
 
   useEffect(() => {
-    console.log('entrei no useEffect')
+    console.log('entrei no useEffect');
     fetchWeights();
   }, []);
 
@@ -131,6 +147,7 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
               name="user-circle"
               size={35}
               color={theme.colorDarkGreen}
+              onPress={() => navigation.navigate('Profile')}
             />
           )}
         </TouchableOpacity>
