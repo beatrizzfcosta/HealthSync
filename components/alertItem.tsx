@@ -1,17 +1,23 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import SwitchToggle from 'react-native-switch-toggle';
 import { Picker } from '@react-native-picker/picker';
 import DatePicker from 'react-native-date-picker';
 import { theme } from '../assets/theme';
-
 interface AlertProps {
   title: string;
   switchOn: boolean;
   onToggle: () => void;
   theme: any;
   isReminder?: boolean; // Para diferenciar se é um alerta com tempo
-  timeValue?: { hours: number; minutes: number }; // O valor deve ser obrigatório e um objeto Date
+  timeValue?: { hours: number; minutes: number } | undefined;
+  // O valor deve ser obrigatório e um objeto Date
   onTimeChange?: (key: 'hours' | 'minutes', value: number) => void; // Aceita um único argumento do tipo Date
   notificationInterval?: number; // Intervalo de notificação para Water e Move
   onIntervalChange?: (value: number) => void;
@@ -39,10 +45,26 @@ const AlertItem = ({
       time?.minutes || 0
     );
   };
+  const formatTime = (time?: { hours: number; minutes: number }): string => {
+    if (!time) return '--:--'; // Default placeholder
+    const hours = time.hours.toString().padStart(2, '0');
+    const minutes = time.minutes.toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
 
+  // Sync local state with timeValue prop
+  useEffect(() => {
+    if (timeValue) {
+      setHour(
+        new Date(new Date().setHours(timeValue.hours, timeValue.minutes, 0, 0))
+      );
+    }
+  }, [timeValue]);
   // Garantia de que timeValue é um objeto Date
   const validTimeValue = convertToDate(timeValue);
-
+  console.log(timeValue);
+  const [hour, setHour] = useState(new Date());
+  const [open, setOpen] = useState(false);
   return (
     <View style={styles.alerts}>
       <View style={styles.alertsHeader}>
@@ -96,15 +118,32 @@ const AlertItem = ({
             <Text style={styles.reminderText}>
               WHAT TIME DO YOU WANT US TO REMIND YOU?
             </Text>
+            <TouchableOpacity onPress={() => setOpen(true)}>
+              <TextInput
+                style={[styles.inputModal, { textAlign: 'center' }]}
+                value={formatTime(timeValue)}
+                editable={false}
+              />
+            </TouchableOpacity>
+
             <DatePicker
-              date={validTimeValue} // Usa o objeto Date convertido
-              onDateChange={(date) => {
+              mode="time"
+              modal
+              locale="pt"
+              is24hourSource="locale"
+              open={open}
+              date={hour}
+              onConfirm={(date) => {
                 const hours = date.getHours();
                 const minutes = date.getMinutes();
                 onTimeChange?.('hours', hours);
                 onTimeChange?.('minutes', minutes);
-              }} // Atualiza horas e minutos
-              mode="time" // Apenas horas e minutos
+                setOpen(false);
+                setHour(date);
+              }}
+              onCancel={() => {
+                setOpen(false);
+              }}
             />
           </View>
         )
@@ -159,8 +198,17 @@ const styles = StyleSheet.create({
     fontFamily: 'graduate',
   },
   picker: {
-    width: 105,
-    height: 30,
+    width: '30%',
+  },
+  inputModal: {
+    color: 'black',
+    width: '40%',
+    marginRight: 70,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    textAlignVertical: 'bottom',
+    fontSize: 14,
   },
 });
 

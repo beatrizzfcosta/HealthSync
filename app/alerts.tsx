@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { theme } from '../assets/theme';
 import AlertItem from '../components/alertItem';
 import { styles } from './styles/alertsStyles';
 import AlarmService, { AlarmData } from '../components/AlarmService';
-
+import notifee, { AuthorizationStatus } from '@notifee/react-native';
 type AlertWithInterval = {
   enabled: boolean;
   interval: number;
@@ -43,13 +43,153 @@ export default function AlertSettingsScreen({
     snack: { enabled: false, time: { hours: 16, minutes: 0 } },
     dinner: { enabled: false, time: { hours: 19, minutes: 30 } },
   });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch alerts from Firebase
+  const fetchAlarms = async () => {
+    try {
+      const fetchedAlarms = await AlarmService.getAlarms(); // Fetch alarms from Firebase
+      const updatedAlerts = { ...alerts };
+
+      fetchedAlarms.forEach((alarm) => {
+        const key = alarm.name as keyof AlertsState; // Ensure the key is valid
+        console.log('Fetched Alarms:', fetchedAlarms);
+        if (key === 'water' || key === 'move') {
+          if (alarm.type === 'interval') {
+            updatedAlerts[key] = {
+              enabled: alarm.enabled,
+              interval: alarm.interval || 15,
+              id: alarm.id,
+            } as AlertWithInterval;
+          }
+        } else if (
+          key === 'sleep' ||
+          key === 'wakeUp' ||
+          key === 'lunch' ||
+          key === 'snack' ||
+          key === 'dinner'
+        ) {
+          if (alarm.type === 'time') {
+            updatedAlerts[key] = {
+              enabled: alarm.enabled,
+              time: alarm.time || { hours: 0, minutes: 0 },
+              id: alarm.id,
+            } as AlertWithTime;
+          }
+        }
+      });
+
+      setAlerts(updatedAlerts);
+      setLoading(false); // Update loading state
+    } catch (error) {
+      console.error('Error fetching alarms from Firebase:', error);
+      Alert.alert('Error', 'Failed to fetch alarms. Please try again.');
+      setLoading(false); // Ensure loading is cleared even on error
+    }
+  };
+
+  const requestUserPermission = async () => {
+    const settings = await notifee.requestPermission();
+
+    if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
+      console.log('Notification permission granted:', settings);
+    } else {
+      console.warn('User declined notification permissions');
+    }
+  };
+
+  useEffect(() => {
+    const initialize = async () => {
+      await requestUserPermission();
+      await fetchAlarms();
+    };
+
+    initialize();
+  }, []); // Run once on mount
 
   // Toggles the enabled state of an alert
-  const toggleAlert = (key: keyof AlertsState) => {
-    setAlerts((prev) => ({
-      ...prev,
-      [key]: { ...prev[key], enabled: !prev[key].enabled },
-    }));
+  const toggleAlert = async (key: keyof AlertsState) => {
+    setAlerts((prev) => {
+      const updatedAlerts = {
+        ...prev,
+        [key]: { ...prev[key], enabled: !prev[key].enabled },
+      };
+
+      const updatedAlert = updatedAlerts[key];
+
+      // Construct `alarmData` based on the alert type
+      const alarmData: AlarmData =
+        'interval' in updatedAlert
+          ? {
+              name: key,
+              enabled: updatedAlert.enabled,
+              type: 'interval',
+              interval: updatedAlert.interval,
+            }
+          : {
+              name: key,
+              enabled: updatedAlert.enabled,
+              type: 'time',
+              time: updatedAlert.time,
+            };
+
+      if (alarmData.enabled) {
+        // Save the alarm to Firestore
+        AlarmService.saveAlarm(alarmData)
+          .then((alarmId) => {
+            // Atualizar o estado com o ID do Firebase
+            setAlerts((prevState) => ({
+              ...prevState,
+              [key]: {
+                ...(prevState[key] as any),
+                id: alarmId, // Salvar o ID no estado
+              },
+            }));
+
+            // Agendar a notificação com o ID
+            return AlarmService.scheduleNotification(alarmData, alarmId);
+          })
+          .catch((error) => {
+            console.error(
+              `Error saving or scheduling alarm for ${key}:`,
+              error
+            );
+            Alert.alert(
+              'Error',
+              `Failed to save or schedule alarm for ${key}. Please try again.`
+            );
+          });
+      } else {
+        // Retrieve the alarmId from the state
+        const alarmId = (updatedAlert as any).id;
+
+        if (alarmId) {
+          // Delete the alarm using the stored ID
+          AlarmService.deleteAlarm(alarmId)
+            .then(() => {
+              // Remove the ID from state after deletion
+              setAlerts((prevState) => ({
+                ...prevState,
+                [key]: {
+                  ...prevState[key],
+                  id: undefined, // Clear the Firestore ID
+                },
+              }));
+            })
+            .catch((error) => {
+              console.error(`Error deleting alarm for ${key}:`, error);
+              Alert.alert(
+                'Error',
+                `Failed to delete alarm for ${key}. Please try again.`
+              );
+            });
+        } else {
+          console.warn(`No alarmId found for ${key}, cannot delete.`);
+        }
+      }
+
+      return updatedAlerts;
+    });
   };
 
   // Updates the interval for interval-based alerts
@@ -86,45 +226,6 @@ export default function AlertSettingsScreen({
     }));
   };
 
-  const onSaveAlarm = async () => {
-    // Map `alerts` to match `AlarmData`
-    const alarmDataList: AlarmData[] = Object.entries(alerts)
-      .map(([key, value]) => {
-        if ('interval' in value) {
-          return {
-            name: key,
-            enabled: value.enabled,
-            type: 'interval', // Set type as 'interval'
-            interval: value.interval,
-          } as AlarmData;
-        } else if ('time' in value) {
-          return {
-            name: key,
-            enabled: value.enabled,
-            type: 'time', // Set type as 'time'
-            time: value.time,
-          } as AlarmData;
-        }
-        return null; // Return null if the entry doesn't match expected structure
-      })
-      .filter((alarmData): alarmData is AlarmData => alarmData !== null); // Use type guard to filter null values
-
-    // Save alarms and schedule notifications
-    try {
-      for (const alarmData of alarmDataList) {
-        if (alarmData.enabled) {
-          await AlarmService.saveAlarm(alarmData);
-          await AlarmService.scheduleNotification(alarmData);
-        }
-      }
-      Alert.alert('Success', 'Alarm settings saved successfully!');
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error('Error saving alarms:', error);
-      Alert.alert('Error', 'Failed to save alarm settings. Please try again.');
-    }
-  };
-
   const alertTitles: {
     key: keyof AlertsState;
     title: string;
@@ -157,6 +258,7 @@ export default function AlertSettingsScreen({
             name="user-circle"
             size={35}
             color={theme.colorDarkGreen}
+            onPress={() => navigation.navigate('Profile')}
           />
         </TouchableOpacity>
       </View>
