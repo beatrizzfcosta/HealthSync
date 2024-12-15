@@ -13,7 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-   "ios": {
+    "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.galaxies.firebase",
       "googleServicesFile": "./GoogleService-Info.plist"
@@ -49,6 +49,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ef7f7ed2-a3d3-4ae8-981f-2e1147c57c9a"
+      }
     }
   }
 }

@@ -51,6 +51,7 @@ export const styles = StyleSheet.create({
      
     },
     cardText: {
+      
       justifyContent: 'center',
       fontSize: 20,
       fontWeight: 'bold',
