@@ -236,7 +236,7 @@ export default function Perfil({ navigation }: { navigation: any }) {
         onPress: async () => {
           try {
             await auth().signOut();
-            navigation.navigate('Sign In');
+            // navigation.navigate('Sign In');
           } catch (error) {
             console.error('Error loging out the user:', error);
           }

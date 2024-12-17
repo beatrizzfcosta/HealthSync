@@ -9,8 +9,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 export default function WeightInScreen({ navigation }: { navigation: any }) {
-  const [integerPart, setIntegerPart] = useState<number>(45);
-  const [decimalPart, setDecimalPart] = useState<number>(0);
+  const [integerPart, setIntegerPart] = useState('25'); // Default to 25
+  const [decimalPart, setDecimalPart] = useState('0'); // Default to 0
   const [unit, setUnit] = useState<string>('kg');
   const [userProfilePicture, setUserProfilePicture] = useState<string | null>(
     null
@@ -18,39 +18,57 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
 
   const fetchWeights = async () => {
     try {
-      console.log('entrei no fetch user');
+      console.log('Iniciando fetchWeights...');
+
       const user = auth().currentUser;
       if (!user) throw new Error('Utilizador não autenticado');
 
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
       const dataCollection = await userRef.collection('data').get();
-      console.log(dataCollection.docs[0].data());
-      if (!dataCollection.empty) {
-        const userInfo = dataCollection.docs[0].data();
-        // const userInfo = dataCollection.data() || { formattedWeights: [] };
-        console.log('dataCollection Existe');
-        if (userInfo.formattedWeights && userInfo.formattedWeights.length > 0) {
-          const sortedWeights = userInfo.formattedWeights.sort(
-            (
-              a: { date: string | number | Date },
-              b: { date: string | number | Date }
-            ) => new Date(b.date).getTime() - new Date(a.date).getTime()
-          );
 
-          const latestWeight = sortedWeights[0];
-          const [intPart, decPart] = latestWeight.weight
-            .toString()
-            .split('.')
-            .map(Number);
+      if (dataCollection.empty) {
+        console.log('Nenhum dado encontrado para o usuário.');
+        return;
+      }
 
-          setIntegerPart(intPart);
-          setDecimalPart(decPart || 0);
-          console.log('Peso mais recente carregado com sucesso:', {
-            intPart,
-            decPart,
-          });
+      // Access the first document in the data collection
+      const userInfo = dataCollection.docs[0].data();
+
+      if (userInfo.formattedWeights && userInfo.formattedWeights.length > 0) {
+        console.log('Pesos encontrados, iniciando ordenação...');
+
+        // Sort the weights by date in descending order (latest first)
+        const sortedWeights = userInfo.formattedWeights.sort(
+          (a: { date: string }, b: { date: string }) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+
+        // Get the latest weight entry
+        const latestWeight = sortedWeights[0];
+
+        // Safely split and parse the weight into integer and decimal parts
+        const [intPart, decPart] = latestWeight.weight
+          .toString()
+          .split('.')
+          .map(Number);
+
+        const newNumber = intPart.toString();
+        setIntegerPart(newNumber);
+        setDecimalPart((decPart || 0).toString());
+        console.log('Valor atual:', integerPart, 'Novo valor:', intPart);
+        console.log(newNumber);
+
+        if (integerPart !== intPart) {
+          setIntegerPart(newNumber);
         }
+        console.log('Peso mais recente carregado com sucesso:', {
+          intPart,
+          decPart,
+          date: latestWeight.date,
+        });
+      } else {
+        console.log('Nenhum peso formatado encontrado.');
       }
     } catch (error) {
       console.error('Erro ao buscar os pesos do usuário:', error);
@@ -64,39 +82,44 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
 
       const userId = user.uid;
       const userRef = firestore().collection('users').doc(userId);
-      const dataDoc = userRef.collection('data').doc('weights');
+      const dataCollectionRef = userRef.collection('data');
 
       const currentDate = new Date().toISOString().split('T')[0];
 
-      let userInfo = (await dataDoc.get()).data() || { formattedWeights: [] };
-      const weights = userInfo.formattedWeights || [];
+      // Fetch existing data document
+      const dataDoc = await dataCollectionRef.limit(1).get();
+      let weights: { date: string; weight: string }[] = [];
 
-      // Substituir peso do dia atual ou adicionar novo peso
+      let docRef; // Reference to update or create the document
+
+      if (!dataDoc.empty) {
+        docRef = dataCollectionRef.doc(dataDoc.docs[0].id);
+        const userData = dataDoc.docs[0].data();
+        weights = userData.formattedWeights || [];
+      } else {
+        docRef = dataCollectionRef.doc();
+      }
+
+      // Find and update or add the weight for the current date
       const existingWeightIndex = weights.findIndex(
-        (w: { date: string }) => w.date === currentDate
+        (w) => w.date === currentDate
       );
 
       if (existingWeightIndex > -1) {
         weights[existingWeightIndex].weight = newWeight;
       } else {
         const previousWeight =
-          weights[0]?.weight || `${integerPart}.${decimalPart}`;
+          weights.length > 0 ? weights[0].weight : newWeight;
         weights.unshift({
           date: currentDate,
           weight: newWeight || previousWeight,
         });
       }
 
-      userInfo.formattedWeights = weights;
-      await dataDoc.set(userInfo);
+      // Update Firestore document
+      await docRef.set({ formattedWeights: weights }, { merge: true });
 
       console.log('Peso atualizado com sucesso:', newWeight);
-      console.log(
-        'Lista atualizada de pesos após salvar:',
-        userInfo.formattedWeights
-      );
-
-      fetchWeights(); // Atualiza o estado local com os novos valores
     } catch (error) {
       console.error('Erro ao adicionar ou atualizar o peso:', error);
     }
@@ -158,7 +181,7 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
           <WheelPickerExpo
             height={300}
             width={80}
-            initialSelectedIndex={integerPart - 25}
+            initialSelectedIndex={Number(integerPart) - 25}
             items={generateRange(25, 300)}
             onChange={({ item }) => setIntegerPart(item.value)}
             renderItem={(props) => (
@@ -178,7 +201,7 @@ export default function WeightInScreen({ navigation }: { navigation: any }) {
           <WheelPickerExpo
             height={300}
             width={50}
-            initialSelectedIndex={decimalPart}
+            initialSelectedIndex={Number(decimalPart)}
             items={generateRange(0, 9)}
             onChange={({ item }) => setDecimalPart(item.value)}
             renderItem={(props) => (

@@ -91,7 +91,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         >
           <Ionicons name="footsteps" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>STEPS</Text>
-          <Text style={styles.highlightValue}>11,250</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -100,7 +99,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         >
           <FontAwesome5 name="walking" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>ACTIVITY</Text>
-          <Text style={styles.highlightValue}>0 TODAY</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.highlightBox}
@@ -112,7 +110,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
             color={theme.colorWhite}
           />
           <Text style={styles.highlightTitle}>WATER</Text>
-          <Text style={styles.highlightValue}>0 of 1,900ML</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.highlightBox}
@@ -120,7 +117,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         >
           <Ionicons name="scale-outline" size={30} color={theme.colorWhite} />
           <Text style={styles.highlightTitle}>WEIGHT</Text>
-          <Text style={styles.highlightValue}>SET WEIGHT</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
